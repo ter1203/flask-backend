@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  tradeshop:
+    build:
+      args: # values for Dockerfile
+        ENVIRONMENT: ${ENVIRONMENT:-dev}
+    command: bash -c "cd src && gunicorn -w 1 --reload -b 0.0.0.0:5050 main:app --log-level debug"
+    ports:
+      - 5050:5050
+
+  gateway:
+    build:
+      args: # values for Dockerfile
+        ENVIRONMENT: ${ENVIRONMENT:-dev}
+    command: bash -c "cd src && gunicorn -w 1 --reload -b 0.0.0.0:5000 main:app --log-level debug"
+    ports:
+      - 5000:5000
