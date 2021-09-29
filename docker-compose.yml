@@ -14,7 +14,7 @@ services:
       - gateway
     restart: on-failure
     volumes:
-      - ./apps/tradeshop/:/app/src/
+      - ./apps/fithm-service/:/app/src/
     environment:
       SECRET_KEY: ${TRADESHOP_SEC_KEY}
 
@@ -31,7 +31,7 @@ services:
       - database
     restart: on-failure
     volumes:
-      - ./apps/gateway/:/app/src/
+      - ./apps/fithm-gateway/:/app/src/
     environment:
       SECRET_KEY: ${GATEWAY_SEC_KEY}
 
