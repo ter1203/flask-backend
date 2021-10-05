@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_mail import Mail
-from .config import Config
+from config import Config
 from libs.database import init_db
 
 def create_app():
@@ -29,4 +29,5 @@ def create_app():
 
     return app
 
-app = create_app()
+app = Flask(__name__)
+# app = create_app()

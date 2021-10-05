@@ -59,6 +59,7 @@ class User(Base):
 		backref=backref('users', lazy='dynamic')
 	)
 
+
 class ApiKey(Base):
 	__tablename__ = 'keys'
 	api_key = Column(String, primary_key=True)
@@ -67,4 +68,3 @@ class ApiKey(Base):
 
 	def as_dict(self):
 		return ({'api_key': self.api_key, 'user_id': self.user_id})
-

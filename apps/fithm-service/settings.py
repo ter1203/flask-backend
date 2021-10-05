@@ -27,7 +27,8 @@ RESOURCES_DIR = os.path.join(STORAGE_DIR, 'resources')
 
 POSTGRES_DB_URL = f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASS}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}'
 
-LOG_CONFIG = { 'level': 'DEBUG' } if DEBUG else { 'level': 'INFO' }
+LOG_CONFIG = { 'level': 'DEBUG', 'handlers': ['wsgi'] } if DEBUG \
+		else { 'level': 'INFO', 'handlers': ['wsgi'] }
 
 if not FITHM_USE_SMTP:
 	FITHM_SMTP_HOST = 'smtp.mailtrap.io'
