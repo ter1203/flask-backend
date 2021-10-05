@@ -1,9 +1,13 @@
-from flask import Blueprint
-from flask import request, g
+from flask_restx import Namespace, Resource
 
-account = Blueprint('account', __name__)
+account = Namespace('account', path='/accounts')
 
 
-@account.route('', methods=['GET', 'POST'])
-def accounts():
-	return 'account blueprint'
+@account.route('/<user_id>')
+class Accounts(Resource):
+    
+    @account.doc('get accounts')
+    def get(self, user_id: str):
+        '''List all accounts'''
+
+        return f'Welcome {user_id}'

@@ -12,23 +12,8 @@ def create_app():
     Mail(app)
     init_db(app)
 
-    from apps.account import account as account_app
-    app.register_blueprint(account_app, url_prefix='/account')
-
-    from apps.admin import admin as admin_app
-    app.register_blueprint(admin_app, url_prefix='/admin')
-
-    # from apps.model import model as model_app
-    # app.register_blueprint(model_app, url_prefix='/model')
-
-    # from apps.portfolio import portfolio as portfolio_app
-    # app.register_blueprint(portfolio_app, url_prefix='/portfolio')
-
-    # from apps.trade import trade as trade_app
-    # app.register_blueprint(trade_app, url_prefix='/trade')
-
-    # from apps.user import user as user_app
-    # app.register_blueprint(user_app, url_prefix='/auth')
+    from apps.api_v1 import api_blueprint as api_v1
+    app.register_blueprint(api_v1, url_prefix='/api/v1')
 
     return app
 

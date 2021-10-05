@@ -1,4 +1,3 @@
-from flask import Blueprint
-from flask import request, g
+from flask_restx import Namespace
 
-trade = Blueprint('trade', __name__)
+trade = Namespace('trade', path='trades')

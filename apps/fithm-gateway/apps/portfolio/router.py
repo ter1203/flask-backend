@@ -1,4 +1,3 @@
-from flask import Blueprint
-from flask import request, g
+from flask_restx import Namespace
 
-portfolio = Blueprint('portfolio', __name__)
+portfolio = Namespace('portfolio', path='portfolios')
