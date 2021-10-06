@@ -20,9 +20,6 @@ Base.query = db_session.query_property()
 def init_db(app: Flask):
     """Initialize the database and flask app"""
 
-    import apps.models
-    Base.metadata.create_all(bind=engine)
-
     @app.teardown_appcontext
     def shutdown_session(exception=None):
         db_session.remove()

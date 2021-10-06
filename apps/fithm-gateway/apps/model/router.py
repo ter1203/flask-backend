@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource
 
-model = Namespace('model', path='models')
+model = Namespace('model', path='/models')
 
 @model.route('/')
 class Models(Resource):

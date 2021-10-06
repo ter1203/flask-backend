@@ -23,3 +23,8 @@ def init_db(app: Flask):
     @app.teardown_appcontext
     def shutdown_session(exception=None):
         db_session.remove()
+
+
+def create_tables():
+    import apps.models
+    Base.metadata.create_all(bind=engine)
