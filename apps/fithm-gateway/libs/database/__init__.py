@@ -28,3 +28,9 @@ def init_db(app: Flask):
 def create_tables():
     import apps.models
     Base.metadata.create_all(bind=engine)
+
+
+def drop_tables():
+    import apps.models
+    Base.metadata.drop_all(bind=engine)
+
