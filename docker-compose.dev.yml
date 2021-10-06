@@ -5,14 +5,18 @@ services:
     build:
       args: # values for Dockerfile
         ENVIRONMENT: ${ENVIRONMENT:-dev}
-    command: bash -c "cd src && gunicorn -w 1 --reload -b 0.0.0.0:5050 main:app --log-level debug"
+    command: bash -c "cd src && gunicorn -w 1 --reload -b 0.0.0.0:5050 main:app --log-level debug --log-syslog"
     ports:
       - 5050:5050
+    environment:
+      ENVIRONMENT: dev
 
   gateway:
     build:
       args: # values for Dockerfile
         ENVIRONMENT: ${ENVIRONMENT:-dev}
-    command: bash -c "cd src && gunicorn -w 1 --reload -b 0.0.0.0:5000 main:app --log-level debug"
+    command: bash -c "cd src && gunicorn -w 1 --reload -b 0.0.0.0:5000 main:app --log-level debug --log-syslog"
     ports:
       - 5000:5000
+    environment:
+      ENVIRONMENT: dev

@@ -23,8 +23,8 @@ RUN pip install --upgrade pip
 FROM base as gateway
 
 WORKDIR $WORKDIR
-COPY apps/gateway/requirements.txt .
-COPY apps/gateway/requirements_dev.txt .
+COPY apps/fithm-gateway/requirements.txt .
+COPY apps/fithm-gateway/requirements_dev.txt .
 
 RUN pip install -r requirements.txt
 RUN if [ "x$ENVIRONMENT" = "xprod" ] ; \
@@ -38,8 +38,8 @@ WORKDIR $APP_HOME
 FROM base as tradeshop
 
 WORKDIR $WORKDIR
-COPY apps/tradeshop/requirements.txt .
-COPY apps/tradeshop/requirements_dev.txt .
+COPY apps/fithm-service/requirements.txt .
+COPY apps/fithm-service/requirements_dev.txt .
 
 RUN pip install -r requirements.txt
 RUN if [ "x$ENVIRONMENT" = "xprod" ] ; \

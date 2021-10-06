@@ -132,3 +132,4 @@ dmypy.json
 data
 nginx/logs
 run.bat
+commands.bat

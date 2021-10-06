@@ -1,8 +1,16 @@
-from flask.cli import FlaskGroup
+from flask.cli import AppGroup
+import click
+from main import app
+from libs.database import create_tables, drop_tables
 
-from .main import app
+db_cli = AppGroup('db')
 
-cli = FlaskGroup(app)
+@db_cli.command('create')
+def create_db():
+    create_tables()
 
-if __name__ == '__main__':
-    cli()
+@db_cli.command('drop')
+def drop_db():
+    drop_tables()
+
+app.cli.add_command(db_cli)
