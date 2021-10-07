@@ -46,3 +46,8 @@ class Config:
     DEBUG = DEBUG
 
     PASSWORD_MIN_LENGTH = 6
+
+    EXPIRE_TIME = {
+        'access_token': 60,
+        'refresh_token': 80
+    }

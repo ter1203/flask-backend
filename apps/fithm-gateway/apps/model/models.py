@@ -3,6 +3,7 @@ from sqlalchemy import (
     String,
     ForeignKey,
     Float,
+    Integer,
     Boolean
 )
 from sqlalchemy.orm import relationship
@@ -15,8 +16,8 @@ class Model(Base):
 
     __tablename__ = 'models'
 
-    id = Column(String, primary_key=True)
-    business_id = Column(String, ForeignKey('businesses.id'), nullable=False)
+    id = Column(Integer, primary_key=True)
+    business_id = Column(Integer, ForeignKey('businesses.id'), nullable=False)
     name = Column(String)
     keywords = Column("data", postgresql.ARRAY(String))
     is_public = Column(Boolean, default=False, nullable=False)
@@ -39,8 +40,8 @@ class Model(Base):
 
 class ModelPosition(Base):
     __tablename__ = 'model_positions'
-    id = Column(String, primary_key=True)
-    model_id = Column(String, ForeignKey('models.id'), nullable=False)
+    id = Column(Integer, primary_key=True)
+    model_id = Column(Integer, ForeignKey('models.id'), nullable=False)
     symbol = Column(String)
     weight = Column(Float)
     price = Column(Float)

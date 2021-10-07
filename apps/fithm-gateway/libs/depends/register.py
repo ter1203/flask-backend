@@ -1,6 +1,6 @@
 from apps.user.lib.parser import AuthParser
 from apps.user.lib.validator import AuthValidator
-from libs.helper.auth import AuthHelper
+from apps.user.lib.auth.authenticator import Authenticator
 
 from .entry import DIEntry, container
 
@@ -30,11 +30,13 @@ def register_auth_entries():
     ))
 
 
-def register_helpers():
-
-    def auth_helper_create():
-        return AuthHelper()
+    def authenticator_create():
+        return Authenticator()
 
     container.add(DIEntry(
-        AuthHelper, auth_helper_create
+        Authenticator, authenticator_create
     ))
+
+
+def register_helpers():
+    pass

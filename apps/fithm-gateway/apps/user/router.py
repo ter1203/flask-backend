@@ -32,5 +32,4 @@ class Signup(Resource):
         validator: AuthValidator = container.get(AuthValidator)
         validator.validate_signup(param)
 
-        return param
-        # return view.signup(param)
+        return view.signup(param)

@@ -1,15 +1,15 @@
+from flask import abort, current_app
 from libs.database import db_session
-from .models import User
-
 from libs.depends.entry import container
-from libs.helper.auth import AuthHelper
+from .lib.auth.authenticator import Authenticator
+
+from apps.models import User, Business
 
 
 class UserView:
     
     def __init__(self):
-        # self.auth_helper: AuthHelper = container.get(AuthHelper)
-        self.auth_helper = None
+        self.authenticator: Authenticator = container.get(Authenticator)
 
 
     def signup(self, param: dict):
@@ -22,9 +22,26 @@ class UserView:
         user = User(
             email=email,
             username=username,
-            password=self.auth_helper.hash_password(password)
+            password=self.authenticator.hash_password(password),
+            active=False
         )
+
         db_session.add(user)
+        business = Business(user=user)
+        db_session.add(business)
         db_session.commit()
 
-        return user
+        return user.as_dict()
+
+
+    def signin(self, email: str, password: str):
+        '''Sign in with email'''
+
+        user = db_session.query(User).filter(User.email == email).first()
+        if not user:
+            abort(404, 'User not found')
+
+        if not self.authenticator.verify_password(password, user.password):
+            abort(403, 'Wrong password')
+
+        return self.authenticator.create_tokens(user.id)
