@@ -27,18 +27,20 @@ class AuthBase:
     def create_tokens(self, user_id: int) -> Dict:
         '''Create access token and refresh token'''
 
-        sec_key: str = current_app.config['SECURITY_KEY']
+        sec_key: str = current_app.config['SECRET_KEY']
 
-        expire: int = current_app.config['LIFE_TIME']['access_token']
+        expire: int = current_app.config['EXPIRE_TIME']['access_token']
+        expire_time = datetime.utcnow() + timedelta(minutes=expire)
         access_token = self.__create_token({
             'id': user_id,
-            'expired': datetime.utcnow() + timedelta(minutes=expire)
+            'expired': int(expire_time.timestamp())
         }, sec_key)
 
-        expire = current_app.config['LIFE_TIME']['refresh_token']
+        expire = current_app.config['EXPIRE_TIME']['refresh_token']
+        expire_time = datetime.utcnow() + timedelta(minutes=expire)
         refresh_token = self.__create_token({
             'id': user_id,
-            'expired': datetime.utcnow() + timedelta(minutes=expire)
+            'expired': int(expire_time.timestamp())
         }, sec_key)
 
         return {

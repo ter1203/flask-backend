@@ -7,7 +7,7 @@ from settings import (
     FITHM_ADMIN_MAIL,
     FITHM_ADMIN_PASS,
     FITHM_SERVICE_URL,
-    GATEWAY_SEC_KEY,
+    SECRET_KEY,
     DEBUG
 )
 from logging.config import dictConfig
@@ -42,7 +42,7 @@ class Config:
     ALLOWED_FILES = ['png', 'jpg', 'jpeg', 'gif']
 
     SERVICE_URL = FITHM_SERVICE_URL
-    SECURITY_KEY = GATEWAY_SEC_KEY
+    SECRET_KEY = SECRET_KEY
     DEBUG = DEBUG
 
     PASSWORD_MIN_LENGTH = 6

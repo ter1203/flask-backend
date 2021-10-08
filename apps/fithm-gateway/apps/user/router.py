@@ -33,3 +33,25 @@ class Signup(Resource):
         validator.validate_signup(param)
 
         return view.signup(param)
+
+
+@user.route('/signin')
+class Signin(Resource):
+    '''Sign in'''
+
+    def post(self):
+        parser: AuthParser = container.get(AuthParser)
+        param = parser.parse_signin(request)
+
+        validator: AuthValidator = container.get(AuthValidator)
+        validator.validate_signin(param)
+
+        return view.signin(param['email'], param['password'])
+
+
+@user.route('/signout')
+class Signout(Resource):
+    '''Sign out'''
+
+    def post(self):
+        pass

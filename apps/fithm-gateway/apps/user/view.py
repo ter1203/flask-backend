@@ -1,4 +1,5 @@
-from flask import abort, current_app
+from datetime import datetime
+from flask import abort, request
 from libs.database import db_session
 from libs.depends.entry import container
 from .lib.auth.authenticator import Authenticator
@@ -18,6 +19,10 @@ class UserView:
         email = param['email']
         username = param['username']
         password = param['password']
+
+        user = db_session.query(User).filter(User.email == email).first()
+        if user is not None:
+            abort(403, 'Email already exists')
 
         user = User(
             email=email,
@@ -43,5 +48,10 @@ class UserView:
 
         if not self.authenticator.verify_password(password, user.password):
             abort(403, 'Wrong password')
+
+        user.current_login_at = datetime.utcnow()
+        user.current_login_ip = request.remote_addr
+        user.login_count = (user.login_count or 0) + 1
+        db_session.commit()
 
         return self.authenticator.create_tokens(user.id)
