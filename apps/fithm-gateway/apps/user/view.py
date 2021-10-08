@@ -1,5 +1,6 @@
 from datetime import datetime
-from flask import abort, request
+from uuid import uuid4
+from flask import abort, request, g
 from libs.database import db_session
 from libs.depends.entry import container
 from .lib.auth.authenticator import Authenticator
@@ -8,7 +9,7 @@ from apps.models import User, Business
 
 
 class UserView:
-    
+
     def __init__(self):
         self.authenticator: Authenticator = container.get(Authenticator)
 
@@ -49,9 +50,32 @@ class UserView:
         if not self.authenticator.verify_password(password, user.password):
             abort(403, 'Wrong password')
 
+        if not user.active:
+            abort(403, 'Not activated user')
+
         user.current_login_at = datetime.utcnow()
         user.current_login_ip = request.remote_addr
         user.login_count = (user.login_count or 0) + 1
+        user.access = str(uuid4())
         db_session.commit()
 
-        return self.authenticator.create_tokens(user.id)
+        return self.authenticator.create_tokens(user.id, user.access)
+
+
+    def signout(self):
+        '''Sign out'''
+
+        user: User = g.user
+        user.access = ''
+        user.last_login_at = datetime.utcnow()
+        user.last_login_ip = request.remote_addr
+        db_session.commit()
+
+        return {
+            'last_login': user.last_login_at.isoformat()
+        }
+
+
+    def confirm(self, token: str):
+        '''Confirm email'''
+

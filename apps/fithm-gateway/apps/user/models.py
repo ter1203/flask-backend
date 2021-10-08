@@ -4,8 +4,7 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
-    ForeignKey,
-    Enum
+    ForeignKey
 )
 from sqlalchemy.orm import relationship, backref
 from libs.database import Base
@@ -39,6 +38,7 @@ class User(Base):
     email = Column(String(255), unique=True)
     username = Column(String(255))
     password = Column(String(255))
+    access = Column(String(255))
     last_login_at = Column(DateTime())
     current_login_at = Column(DateTime())
     last_login_ip = Column(String(100))

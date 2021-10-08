@@ -1,22 +1,14 @@
 from flask_restx import Namespace, Resource
-from flask import request
+from flask import request, g
 from .lib.parser import AuthParser
 from .lib.validator import AuthValidator
 from .view import UserView
 from libs.depends.entry import container
+from libs.middleware.auth import login_required
 
 
 user = Namespace('user', path='/auth')
 view = UserView()
-
-@user.route('/')
-class Users(Resource):
-
-    @user.doc('user healthy')
-    def get(self):
-        '''List all users'''
-
-        return f'Welcome user'
 
 
 @user.route('/signup')
@@ -53,5 +45,19 @@ class Signin(Resource):
 class Signout(Resource):
     '''Sign out'''
 
+    @login_required()
     def post(self):
-        pass
+        
+        return view.signout()
+
+
+@user.route('/confirm-email')
+class ConfirmEmail(Resource):
+    '''Confirm mail'''
+
+    def post(self):
+
+        parser: AuthParser = container.get(AuthParser)
+        param = parser.parse_email_confirm(request)
+
+        return view.confirm(param['confirm_token'])
