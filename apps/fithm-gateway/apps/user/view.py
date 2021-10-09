@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
-from flask import abort, request, g
-from flask_mail import Message
+from flask import abort, request, g, current_app
+from libs.email.message import send_mail_template
 from libs.database import db_session
 from libs.depends.entry import container
 from .lib.auth.authenticator import Authenticator
@@ -38,6 +38,15 @@ class UserView:
         db_session.add(business)
         db_session.commit()
 
+        send_mail_template(
+            'Confirm your email', 
+            current_app.config['FITHM_ADMIN_USER'],
+            email,
+            'email_confirm.html',
+            title='Confirm your email',
+            app_title='fithm.com',
+            link=self.authenticator.create_confirm_token(user.id)
+        )
         return user.as_dict()
 
 
@@ -84,7 +93,50 @@ class UserView:
 
 
     def send_confirm(self):
+
         user: User = g.user
         token = self.authenticator.create_confirm_token(user.id)
-        
-        return token
+
+        # Should be replaced with { 'result': 'email was sent' }
+        return send_mail_template(
+            'Confirm your email', 
+            current_app.config['ADMIN_MAIL_USER'],
+            user.email,
+            'email_confirm.html',
+            app_title='fithm.com',
+            link=token
+        )
+
+
+    def forgot_password(self, email: str):
+
+        user = db_session.query(User).filter(User.email == email).first()
+        if not user:
+            abort(404, 'User not found')
+
+        reset_token = self.authenticator.create_reset_token(user.id)
+
+        # Should be replaced with { 'result': 'email was sent' }
+        return send_mail_template(
+            'Reset your password', 
+            current_app.config['ADMIN_MAIL_USER'],
+            user.email,
+            'reset_password.html',
+            app_title='fithm.com',
+            link=reset_token
+        )
+
+
+    def reset_password(self, reset_token: str, password: str):
+
+        user_id = self.authenticator.get_user_from_reset(reset_token)
+        user = db_session.query(User).filter(User.id == user_id).first()
+        if not user:
+            abort(404, 'User not found')
+
+        user.password = self.authenticator.hash_password(password)
+        db_session.commit()
+
+        return {
+            'result': 'success'
+        }

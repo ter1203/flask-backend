@@ -71,3 +71,24 @@ class SendConfirm(Resource):
     def get(self):
 
         return view.send_confirm()
+
+
+@user.route('/forgot-password')
+class ForgotPassword(Resource):
+    '''Send reset password link'''
+
+    def post(self):
+        parser: AuthParser = container.get(AuthParser)
+        param = parser.parse_forgot_password(request)
+
+        return view.forgot_password(param['email'])
+
+
+@user.route('/reset-password')
+class ResetPassword(Resource):
+
+    def post(self):
+        parser: AuthParser = container.get(AuthParser)
+        param = parser.parse_reset_password(request)
+
+        return view.reset_password(param['reset_token'], param['password'])

@@ -1,5 +1,6 @@
 from flask_restx import reqparse
 from flask import Request
+from werkzeug.wrappers import request
 
 class AuthParser:
     
@@ -7,6 +8,8 @@ class AuthParser:
         self.signup = None
         self.signin = None
         self.email_confirm = None
+        self.forgot_pass = None
+        self.reset_pass = None
 
 
     def parse_signup(self, req: Request) -> dict:
@@ -34,3 +37,20 @@ class AuthParser:
             self.email_confirm.add_argument('confirm_token', required=True, type=str, location='json')
 
         return self.email_confirm.parse_args(req)
+
+
+    def parse_forgot_password(self, req: Request) -> dict:
+        if not self.forgot_pass:
+            self.forgot_pass = reqparse.RequestParser()
+            self.forgot_pass.add_argument('email', required=True, type=str, location='json')
+
+        return self.forgot_pass.parse_args(req)
+
+
+    def parse_reset_password(self, req: Request) -> dict:
+        if not self.reset_pass:
+            self.reset_pass = reqparse.RequestParser()
+            self.reset_pass.add_argument('reset_token', required=True, type=str, location='json')
+            self.reset_pass.add_argument('password', required=True, type=str, location='json')
+
+        return self.reset_pass.parse_args(req)
