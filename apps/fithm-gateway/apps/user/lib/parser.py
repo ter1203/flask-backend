@@ -1,6 +1,5 @@
 from flask_restx import reqparse
 from flask import Request
-from werkzeug.wrappers import request
 
 class AuthParser:
     
