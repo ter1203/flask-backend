@@ -1,6 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 from flask import abort, request, g
+from flask_mail import Message
 from libs.database import db_session
 from libs.depends.entry import container
 from .lib.auth.authenticator import Authenticator
@@ -50,9 +51,6 @@ class UserView:
         if not self.authenticator.verify_password(password, user.password):
             abort(403, 'Wrong password')
 
-        if not user.active:
-            abort(403, 'Not activated user')
-
         user.current_login_at = datetime.utcnow()
         user.current_login_ip = request.remote_addr
         user.login_count = (user.login_count or 0) + 1
@@ -79,3 +77,14 @@ class UserView:
     def confirm(self, token: str):
         '''Confirm email'''
 
+        self.authenticator.confirm_email(token)
+        return {
+            'result': 'success'
+        }
+
+
+    def send_confirm(self):
+        user: User = g.user
+        token = self.authenticator.create_confirm_token(user.id)
+        
+        return token

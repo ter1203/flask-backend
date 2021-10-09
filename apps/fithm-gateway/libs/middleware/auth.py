@@ -36,3 +36,20 @@ def login_required():
         return wrapped_view
 
     return _decorated_view
+
+
+def active_required():
+    def _decorated_view(view):
+        @wraps(view)
+        def wrapped_view(*args, **kwargs):
+            if g.user is None:
+                abort(401, 'Not authorized')
+       
+            if not g.user.active:
+                abort(401, 'Not activated user')
+
+            return view(*args, **kwargs)
+
+        return wrapped_view
+
+    return _decorated_view

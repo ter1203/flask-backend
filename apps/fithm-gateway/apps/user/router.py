@@ -61,3 +61,13 @@ class ConfirmEmail(Resource):
         param = parser.parse_email_confirm(request)
 
         return view.confirm(param['confirm_token'])
+
+
+@user.route('/send-confirm')
+class SendConfirm(Resource):
+    '''Send confirmation email'''
+
+    @login_required()
+    def get(self):
+
+        return view.send_confirm()

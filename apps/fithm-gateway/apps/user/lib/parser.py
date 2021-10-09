@@ -31,6 +31,6 @@ class AuthParser:
     def parse_email_confirm(self, req: Request) -> dict:
         if not self.email_confirm:
             self.email_confirm = reqparse.RequestParser()
-            self.email_confirm.add_argument('confirm_token', required=True, type=str, location='args')
+            self.email_confirm.add_argument('confirm_token', required=True, type=str, location='json')
 
         return self.email_confirm.parse_args(req)

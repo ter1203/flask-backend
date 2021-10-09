@@ -25,7 +25,7 @@ class AuthBase:
         return self.context.verify(password, hashed)
 
 
-    def create_confirm_token(self, user_id):
+    def create_confirm_token(self, user_id: str) -> str:
         '''Create confirmation token'''
 
         sec_key: str = current_app.config['SECRET_KEY']
@@ -92,6 +92,15 @@ class AuthBase:
 
         sec_key: str = current_app.config['SECRET_KEY']
         payload = jwt.decode(token, f'{sec_key}_conf', ['HS256'])
+        if self.__is_expired(payload):
+            abort(400, 'Expired token')
+
+        user = db_session.query(User).filter(User.id == payload['id']).first()
+        if not user:
+            abort(404, 'Not found')
+
+        user.active = True
+        db_session.commit()
 
 
     def regen_tokens(self, refresh_token: str):
