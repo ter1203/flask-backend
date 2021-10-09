@@ -1,6 +1,7 @@
 from sqlalchemy import (
     Column,
     String,
+    Integer,
     ForeignKey
 )
 from sqlalchemy.orm import relationship
@@ -9,9 +10,9 @@ from libs.database import Base
 
 class Portfolio(Base):
     __tablename__ = 'portfolios'
-    id = Column(String, primary_key=True)
-    business_id = Column(String, ForeignKey('businesses.id'), nullable=False)
-    model_id = Column(String, ForeignKey('models.id'))
+    id = Column(Integer, primary_key=True)
+    business_id = Column(Integer, ForeignKey('businesses.id'), nullable=False)
+    model_id = Column(Integer, ForeignKey('models.id'))
     name = Column(String)
     business = relationship("Business", back_populates="portfolios")
     accounts = relationship("Account", back_populates="portfolio")

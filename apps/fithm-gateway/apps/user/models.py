@@ -4,8 +4,7 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
-    ForeignKey,
-    Enum
+    ForeignKey
 )
 from sqlalchemy.orm import relationship, backref
 from libs.database import Base
@@ -39,6 +38,7 @@ class User(Base):
     email = Column(String(255), unique=True)
     username = Column(String(255))
     password = Column(String(255))
+    access = Column(String(255))
     last_login_at = Column(DateTime())
     current_login_at = Column(DateTime())
     last_login_ip = Column(String(100))
@@ -52,19 +52,20 @@ class User(Base):
     last_name = Column(String)
     company = Column(String)
     phone_number = Column(String)
-    business_id = Column(String, ForeignKey('businesses.id'), nullable=False)
-    business = relationship('Business', back_populates='user')
+    business = relationship('Business', back_populates='user', uselist=False)
     roles = relationship(
         'Role', secondary='roles_users',
         backref=backref('users', lazy='dynamic')
     )
 
-
-class ApiKey(Base):
-    __tablename__ = 'keys'
-    api_key = Column(String, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    user = relationship("User", back_populates="user_api_key")
-
     def as_dict(self):
-        return ({'api_key': self.api_key, 'user_id': self.user_id})
+        return {
+            'id': self.id,
+            'email': self.email,
+            'username': self.username,
+            'company': self.company,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'phone_number': self.phone_number,
+        }
+

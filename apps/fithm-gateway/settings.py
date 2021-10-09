@@ -12,11 +12,11 @@ FITHM_ADMIN_MAIL = os.environ.get('FITHM_ADMIN_MAIL')
 FITHM_ADMIN_PASS = os.environ.get('FITHM_ADMIN_PASS')
 
 FITHM_QUOVO_KEY = os.environ.get('FITHM_QUOVO_KEY')
-GATEWAY_SEC_KEY = os.environ.get('GATEWAY_SEC_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
-FITHM_SERVICE_URL = os.environ.get('FITHM_SERVICE_URL', 'http://127.0.0.1:5050/api')
-POSTGRES_HOST = os.environ.get('POSTGRES_HOST', 'localhost')
-POSTGRES_PORT = os.environ.get('POSTGRES_PORT', 5432)
+FITHM_SERVICE_URL = os.environ.get('FITHM_SERVICE_URL') or 'http://127.0.0.1:5050/api'
+POSTGRES_HOST = os.environ.get('POSTGRES_HOST') or 'localhost'
+POSTGRES_PORT = os.environ.get('POSTGRES_PORT') or 5432
 POSTGRES_USER = os.environ.get('POSTGRES_USER')
 POSTGRES_PASS = os.environ.get('POSTGRES_PASSWORD')
 POSTGRES_DB = os.environ.get('POSTGRES_DB', 'fithm')

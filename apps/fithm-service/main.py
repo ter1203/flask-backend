@@ -12,22 +12,21 @@ def create_app():
     Mail(app)
     init_db(app)
 
-    from apps.account import account as account_app
+    from apps.account.router import account as account_app
     app.register_blueprint(account_app, url_prefix='/account')
 
-    from apps.admin import admin as admin_app
+    from apps.admin.router import admin as admin_app
     app.register_blueprint(admin_app, url_prefix='/admin')
 
-    from apps.model import model as model_app
+    from apps.model.router import model as model_app
     app.register_blueprint(model_app, url_prefix='/model')
 
-    from apps.portfolio import portfolio as portfolio_app
+    from apps.portfolio.router import portfolio as portfolio_app
     app.register_blueprint(portfolio_app, url_prefix='/portfolio')
 
-    from apps.trade import trade as trade_app
+    from apps.trade.router import trade as trade_app
     app.register_blueprint(trade_app, url_prefix='/trade')
 
     return app
 
-app = Flask(__name__)
-# app = create_app()
+app = create_app()
