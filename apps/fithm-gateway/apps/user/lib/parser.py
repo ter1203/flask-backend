@@ -31,6 +31,8 @@ class AuthParser:
             self.update.add_argument('company', type=str, location='json')
             self.update.add_argument('phone_number', type=str, location='json')
 
+        return self.update.parse_args(req)
+
 
     def parse_signin(self, req: Request) -> dict:
         if not self.signin:
