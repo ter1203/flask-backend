@@ -40,7 +40,7 @@ class UserView:
 
         send_mail_template(
             'Confirm your email', 
-            current_app.config['FITHM_ADMIN_USER'],
+            current_app.config['ADMIN_MAIL_USER'],
             email,
             'email_confirm.html',
             title='Confirm your email',
@@ -49,7 +49,7 @@ class UserView:
         )
         return user.as_dict()
 
-    
+
     def update(self, param: dict):
         '''Update user'''
 
@@ -57,7 +57,7 @@ class UserView:
 
         for key in param:
             setattr(user, key, param[key])
-        
+
         db_session.commit()
         return user.as_dict()
 
