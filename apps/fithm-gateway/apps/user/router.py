@@ -4,15 +4,15 @@ from .lib.parser import AuthParser
 from .lib.validator import AuthValidator
 from .view import UserView
 from libs.depends.entry import container
-from libs.middleware.auth import login_required
+from libs.middleware.auth import login_required, active_required
 
 
 user = Namespace('user', path='/auth')
 view = UserView()
 
 
-@user.route('/signup')
-class Signup(Resource):
+@user.route('/')
+class User(Resource):
     '''Sign up'''
 
     @user.doc('sign-up new user')
@@ -25,6 +25,25 @@ class Signup(Resource):
         validator.validate_signup(param)
 
         return view.signup(param)
+
+
+    @user.doc('update user')
+    @login_required()
+    @active_required()
+    def put(self):
+
+        parser: AuthParser = container.get(AuthParser)
+        param = parser.parse_update(request)
+
+        return view.update(param)
+
+
+    @user.doc('delete user')
+    @login_required()
+    @active_required()
+    def delete(self):
+
+        return view.delete()
 
 
 @user.route('/signin')

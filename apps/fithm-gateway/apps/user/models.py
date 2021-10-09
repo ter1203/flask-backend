@@ -62,5 +62,10 @@ class User(Base):
         return {
             'id': self.id,
             'email': self.email,
-            'username': self.username
+            'username': self.username,
+            'company': self.company,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'phone_number': self.phone_number,
         }
+

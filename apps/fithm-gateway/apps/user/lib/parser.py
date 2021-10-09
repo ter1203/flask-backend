@@ -6,6 +6,7 @@ class AuthParser:
     
     def __init__(self) -> None:
         self.signup = None
+        self.update = None
         self.signin = None
         self.email_confirm = None
         self.forgot_pass = None
@@ -16,10 +17,19 @@ class AuthParser:
         if not self.signup:
             self.signup = reqparse.RequestParser()
             self.signup.add_argument('email', required=True, type=str, location='json')
-            self.signup.add_argument('username', type=str, location='json')
+            self.signup.add_argument('username', required=True, type=str, location='json')
             self.signup.add_argument('password', required=True, type=str, location='json')
 
         return self.signup.parse_args(req)
+
+
+    def parse_update(self, req: Request) -> dict:
+        if not self.update:
+            self.update = reqparse.RequestParser()
+            self.update.add_argument('first_name', type=str, location='json')
+            self.update.add_argument('last_name', type=str, location='json')
+            self.update.add_argument('company', type=str, location='json')
+            self.update.add_argument('phone_number', type=str, location='json')
 
 
     def parse_signin(self, req: Request) -> dict:
