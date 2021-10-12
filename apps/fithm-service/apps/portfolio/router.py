@@ -1,4 +1,13 @@
-from flask import Blueprint
-from flask import request, g
+from flask_restx import Namespace, Resource
 
-portfolio = Blueprint('portfolio', __name__)
+portfolio = Namespace('portfolio', path='/portfolios')
+
+
+@portfolio.route('/')
+class Portfolios(Resource):
+
+    @portfolio.doc('portfolio healthy')
+    def get(self):
+        '''List all portfolios'''
+
+        return f'Welcome portfolio'

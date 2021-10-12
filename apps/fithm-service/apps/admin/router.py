@@ -1,4 +1,12 @@
-from flask import Blueprint
-from flask import request, g
+from flask_restx import Namespace, Resource
 
-admin = Blueprint('admin', __name__)
+admin = Namespace('admin')
+
+
+@admin.route('/')
+class Admin(Resource):
+
+    @admin.doc('admin healthy')
+    def get(self):
+
+        return f'Welcome admin'

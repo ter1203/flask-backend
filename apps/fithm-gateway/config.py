@@ -19,7 +19,6 @@ dictConfig({
     }},
     'handlers': {'wsgi': {
         'class': 'logging.StreamHandler',
-        'stream': 'ext://flask.logging.wsgi_errors_stream',
         'formatter': 'default'
     }},
     'root': LOG_CONFIG

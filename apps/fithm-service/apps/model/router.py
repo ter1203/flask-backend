@@ -1,4 +1,13 @@
-from flask import Blueprint
-from flask import request, g
+from flask_restx import Namespace, Resource
 
-model = Blueprint('model', __name__)
+model = Namespace('model', path='/models')
+
+
+@model.route('/')
+class Models(Resource):
+
+    @model.doc('model healthy')
+    def get(self):
+        '''List all models'''
+
+        return f'Welcome model'

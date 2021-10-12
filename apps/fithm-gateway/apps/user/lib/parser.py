@@ -1,6 +1,5 @@
 from flask_restx import reqparse
 from flask import Request
-from werkzeug.wrappers import request
 
 class AuthParser:
     
@@ -30,6 +29,8 @@ class AuthParser:
             self.update.add_argument('last_name', type=str, location='json')
             self.update.add_argument('company', type=str, location='json')
             self.update.add_argument('phone_number', type=str, location='json')
+
+        return self.update.parse_args(req)
 
 
     def parse_signin(self, req: Request) -> dict:

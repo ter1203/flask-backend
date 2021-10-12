@@ -42,9 +42,6 @@ def active_required():
     def _decorated_view(view):
         @wraps(view)
         def wrapped_view(*args, **kwargs):
-            if g.user is None:
-                abort(401, 'Not authorized')
-       
             if not g.user.active:
                 abort(401, 'Not activated user')
 
