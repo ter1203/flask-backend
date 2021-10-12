@@ -30,6 +30,11 @@ def create_tables():
     Base.metadata.create_all(bind=engine)
 
 
+def populate_default():
+    from .defaults import default_values
+    default_values()
+
+
 def drop_tables():
     import apps.models
     Base.metadata.drop_all(bind=engine)
