@@ -1,13 +1,12 @@
 from flask_restx import Namespace, Resource
-from flask import request
+from flask import request, current_app
 from .lib.parser import AccountParser
 from libs.depends.entry import container
-import requests
+from libs.helper.forward import forward_request
 
 from libs.middleware.auth import login_required, active_required
 
 account = Namespace('account', path='/accounts', decorators=[active_required(), login_required()])
-
 
 @account.route('/')
 class Accounts(Resource):
@@ -16,7 +15,8 @@ class Accounts(Resource):
     def get(self):
         '''List all accounts'''
 
-        return f'Welcome list'
+        result = forward_request()
+        return f'Welcome {result}'
 
 
     @account.doc('create account')

@@ -1,4 +1,13 @@
-from flask import Blueprint
-from flask import request, g
+from flask_restx import Namespace, Resource
 
-trade = Blueprint('trade', __name__)
+trade = Namespace('trade', path='/trades')
+
+
+@trade.route('/')
+class Trades(Resource):
+
+    @trade.doc('trade healthy')
+    def get(self):
+        '''List all trades'''
+
+        return f'Welcome trade'
