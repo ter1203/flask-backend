@@ -123,7 +123,7 @@ class UserView:
 
         # Should be replaced with { 'result': 'email was sent' }
         return send_mail_template(
-            'Confirm your email', 
+            'Confirm your email',
             current_app.config['ADMIN_MAIL_USER'],
             user.email,
             'email_confirm.html',
