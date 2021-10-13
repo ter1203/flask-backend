@@ -2,7 +2,7 @@ from apps.auth.lib.parser import AuthParser
 from apps.auth.lib.validator import AuthValidator
 from apps.auth.lib.auth.authenticator import Authenticator
 from apps.user.lib.parser import UserParser
-
+from apps.model.lib.parser import ModelParser
 from apps.account.lib.parser import AccountParser
 
 from .entry import DIEntry, container
@@ -13,6 +13,7 @@ def register_all():
 
     register_auth_entries()
     register_account_entries()
+    register_model_entries()
     register_helpers()
 
 
@@ -54,6 +55,16 @@ def register_account_entries():
 
     container.add(DIEntry(
         AccountParser, account_parser_create
+    ))
+
+
+def register_model_entries():
+
+    def model_parser_create():
+        return ModelParser()
+
+    container.add(DIEntry(
+        ModelParser, model_parser_create
     ))
 
 
