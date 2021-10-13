@@ -2,7 +2,7 @@ from functools import wraps
 from flask import current_app, g, abort, request
 from flask.app import Flask
 from libs.depends.entry import container
-from apps.user.lib.auth.authenticator import Authenticator
+from apps.auth.lib.auth.authenticator import Authenticator
 
 def init_middlewares(app: Flask):
     '''Initialize app with middlewares'''

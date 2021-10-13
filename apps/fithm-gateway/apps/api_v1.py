@@ -4,6 +4,9 @@ from flask_restx import Api
 api_blueprint = Blueprint('api', __name__)
 api_v1 = Api(api_blueprint, doc='/docs')
 
+from .auth.router import auth
+api_v1.add_namespace(auth)
+
 from .account.router import account
 api_v1.add_namespace(account)
 

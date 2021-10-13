@@ -21,7 +21,7 @@ class Accounts(Resource):
         return f'Create an account: {param}'
 
 
-@account.route('/<account_id>')
+@account.route('/<string:account_id>')
 class Account(Resource):
 
     @account.doc('get account info')

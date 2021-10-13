@@ -1,6 +1,7 @@
-from apps.user.lib.parser import AuthParser
-from apps.user.lib.validator import AuthValidator
-from apps.user.lib.auth.authenticator import Authenticator
+from apps.auth.lib.parser import AuthParser
+from apps.auth.lib.validator import AuthValidator
+from apps.auth.lib.auth.authenticator import Authenticator
+from apps.user.lib.parser import UserParser
 
 from apps.account.lib.parser import AccountParser
 
@@ -24,7 +25,6 @@ def register_auth_entries():
         AuthParser, auth_parser_create
     ))
 
-
     def auth_validator_create():
         return AuthValidator()
 
@@ -32,12 +32,18 @@ def register_auth_entries():
         AuthValidator, auth_validator_create
     ))
 
-
     def authenticator_create():
         return Authenticator()
 
     container.add(DIEntry(
         Authenticator, authenticator_create
+    ))
+
+    def user_parser_create():
+        return UserParser()
+
+    container.add(DIEntry(
+        UserParser, user_parser_create
     ))
 
 
