@@ -1,4 +1,3 @@
-from typing import List
 from flask_restx import reqparse
 from flask import Request
 
@@ -32,6 +31,6 @@ class ModelParser():
     def parse_update_positions(self, req: Request) -> dict:
         if not self.update_pos:
             self.update_pos = reqparse.RequestParser()
-            self.update_pos.add_argument('positions', type=List, location='json')
+            self.update_pos.add_argument('positions', type=list, location='json')
 
         return self.update_pos.parse_args(req)

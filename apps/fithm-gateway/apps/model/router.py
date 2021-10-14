@@ -4,6 +4,7 @@ from libs.helper.forward import forward_request
 from libs.middleware.auth import login_required, active_required
 from libs.depends.entry import container
 from .lib.parser import ModelParser
+from .lib.validator import ModelValidator
 
 model = Namespace('model', path='/models', decorators=[active_required(), login_required()])
 
@@ -60,5 +61,8 @@ class ModelPosition(Resource):
 
         parser: ModelParser = container.get(ModelParser)
         body = parser.parse_update_positions(request)
+
+        validator: ModelValidator = container.get(ModelValidator)
+        validator.validate_update_positions(body)
 
         return forward_request(body=body)
