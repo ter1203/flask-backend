@@ -7,6 +7,7 @@ from apps.model.lib.validator import ModelValidator
 from apps.account.lib.parser import AccountParser
 from apps.portfolio.lib.parser import PortfolioParser
 from apps.trade.lib.parser import TradeParser
+from apps.admin.lib.parser import AdminParser
 
 from .entry import DIEntry, container
 
@@ -19,6 +20,7 @@ def register_all():
     register_model_entries()
     register_portfolio_entries()
     register_trade_entries()
+    register_admin_entries()
     register_helpers()
 
 
@@ -97,6 +99,16 @@ def register_trade_entries():
 
     container.add(DIEntry(
         TradeParser, trade_parser_create
+    ))
+
+
+def register_admin_entries():
+
+    def admin_parser_create():
+        return AdminParser()
+
+    container.add(DIEntry(
+        AdminParser, admin_parser_create
     ))
 
 
