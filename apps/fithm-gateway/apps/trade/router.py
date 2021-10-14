@@ -27,7 +27,7 @@ class TradeList(Resource):
 @trade.route('/instructions')
 class TradeInstructions(Resource):
 
-    @trade.doc('get trades')
+    @trade.doc('get instructions')
     def post(self):
 
         parser: TradeParser = container.get(TradeParser)
@@ -112,6 +112,6 @@ class TradePrices(Resource):
 class TradeRequests(Resource):
 
     @trade.doc('get requests')
-    def get(self):
+    def get(self, trade_id: int):
 
         return forward_request()

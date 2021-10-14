@@ -7,7 +7,7 @@ from libs.middleware.auth import login_required, active_required
 
 account = Namespace('account', path='/accounts', decorators=[active_required(), login_required()])
 
-@account.route('/')
+@account.route('')
 class Accounts(Resource):
 
     @account.doc('get accounts')
@@ -27,7 +27,7 @@ class Accounts(Resource):
         return forward_request(body=param)
 
 
-@account.route('/<account_id>')
+@account.route('/<int:account_id>')
 class Account(Resource):
 
     @account.doc('get account info')

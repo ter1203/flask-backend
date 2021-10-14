@@ -15,10 +15,10 @@ def forward_request(body: Optional[Dict] = None, params: Optional[Dict] = None) 
     method = request.method
 
     if g.user and hasattr(g.user, 'id'):
-        if method == 'put' or method == 'post':
+        if method == 'PUT' or method == 'POST':
             body['user_id'] = g.user.id
-        elif method == 'get' or method == 'delete':
+        elif method == 'GET' or method == 'DELETE':
             params['user_id'] = g.user.id
 
-    current_app.logger.debug(f'url = {url}, method = {method}')
+    current_app.logger.debug(f'url = {url}, method = {method}, params = {params}, body = {body}')
     return requests.request(method, url, params=params, json=body).json()
