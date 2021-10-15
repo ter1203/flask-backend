@@ -7,6 +7,7 @@ class AdminParser:
 
     def __init__(self):
         self.get_users = None
+        self.update_user = None
 
 
     def parse_get_users(self, req: Request) -> dict:
@@ -18,3 +19,11 @@ class AdminParser:
                 'page_size', default=10, type=int, location='args')
 
         return self.get_users.parse_args(req)
+
+
+    def parse_update_user(self, req: Request) -> dict:
+        if not self.update_user:
+            self.update_user = reqparse.RequestParser()
+            self.update_user.add_argument('active', type=bool, location='json')
+
+        return self.update_user.parse_args(req)

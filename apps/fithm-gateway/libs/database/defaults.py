@@ -1,5 +1,5 @@
 from apps.models import Role, RolesUsers, User
-from apps.user.lib.auth.authenticator import Authenticator
+from apps.auth.lib.auth.authenticator import Authenticator
 from libs.depends.register import container
 from libs.roles import RoleValues
 from . import db_session

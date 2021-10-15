@@ -34,7 +34,7 @@ class AuthView:
             active=False
         )
 
-        current_app.logger.debug('user: {}', user)
+        current_app.logger.debug(f'user: {user}')
         db_session.add(user)
         business = Business(user=user)
         db_session.add(business)
