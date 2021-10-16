@@ -25,6 +25,7 @@ class Model(Base):
     allocation = relationship(
         "ModelPosition", back_populates="model", cascade="all, delete, delete-orphan")
     portfolio = relationship("Portfolio", back_populates="model")
+    pendings = relationship('Pending', back_populates='model')
 
     def as_dict(self):
         result = {'id': self.id, 'name': self.name, 'keywords': [], 'allocation': 'null',

@@ -21,9 +21,9 @@ class ModelParser():
     def parse_create(self, req: Request) -> dict:
         if not self.create:
             self.create = reqparse.RequestParser()
-            self.create.add_argument('name', type=str, location='json')
-            self.create.add_argument('keywords', type=str, location='json')
-            self.create.add_argument('public', type=str, location='json')
+            self.create.add_argument('name', required=True, type=str, location='json')
+            self.create.add_argument('keywords', required=True, type=list[str], location='json')
+            self.create.add_argument('public', required=True, type=bool, location='json')
 
         return self.create.parse_args(req)
 

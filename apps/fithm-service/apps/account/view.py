@@ -49,22 +49,28 @@ class AccountView:
     def get_account(self, id: int):
         '''Get account detail'''
 
-        account = db_session.query(Account).get(id)
-        if not account:
-            abort(404, 'Account not found')
-        if account.business_id != g.business.id:
-            abort(403, "You don't have permission to use this account.")
-
+        account = self.__get_account(id)
         return account.as_dict()
 
 
     def delete_account(self, id: int):
         '''Delete an account'''
 
-        account = db_session.query(Account).get(id)
+        account = self.__get_account(id)
         db_session.delete(account)
         db_session.commit()
 
         return {
             'result': 'success'
         }
+
+
+    def __get_account(id: int) -> Account:
+
+        account = db_session.query(Account).get(id)
+        if not account:
+            abort(404, 'Account not found')
+        if account.business_id != g.business.id:
+            abort(403, "You don't have permission to this account.")
+
+        return account

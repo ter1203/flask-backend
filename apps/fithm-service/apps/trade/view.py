@@ -1,4 +1,13 @@
+from datetime import datetime
 from flask import current_app, g
+from libs.database import db_session, helpers
+from libs.database.portfolios import get_portfolios
+from libs.database.trade import (
+    update_account_positions, get_trade_prices,
+    update_trade_prices, get_requests
+)
+from libs.database.accounts import get_account_positions
+from apps.models import Trade, Business, Portfolio, Pending, AccountPosition
 
 
 class TradeView:
@@ -10,25 +19,38 @@ class TradeView:
     def get_trades(self) -> list:
         '''Get all trades'''
 
-        return f'all_trades'
+        business: Business = g.business
+        return {
+            'trades': [trade.as_dict() for trade in business.trades]
+        }
 
 
     def create_trade(self, body: dict) -> dict:
         '''Create a new trade'''
 
-        return body
+        trade = Trade(business_id=g.business.id, status=False, created=datetime.utcnow())
+        db_session.add(trade)
+        db_session.commit()
+
+        return trade.as_dict()
 
 
     def get_trade(self, id: int) -> dict:
         '''Get a trade details'''
 
-        return f'trade_{id}'
+        trade = self.__get_trade(id)
+        return trade.as_dict()
 
 
     def update_trade(self, id: int, body: dict) -> dict:
         '''Update a trade'''
 
-        return f'update trade_{id}'
+        status = body['status']
+        trade = self.__get_trade(id)
+        trade.status = status
+        db_session.commit()
+
+        return trade.as_dict()
 
 
     def delete_trade(self, id: int):
@@ -40,40 +62,84 @@ class TradeView:
     def get_instructions(self, body: dict) -> list:
         '''Get instructions'''
 
-        return 'get_instructions'
+        return 'Not implemented yet'
 
 
-    def get_portfolios(self, id: int) -> list:
+    def update_portfolios(self, id: int, body: dict) -> list:
         '''Get portfolios for the trade'''
 
-        return f'portfolios for trade_{id}'
+        trade = self.__get_trade(id)
+        port_ids = body['portfolios']
+
+        helpers.update_pendings_of_trade(trade, get_portfolios(port_ids))
+        return trade.as_dict()
 
 
-    def get_positions(self, id: int) -> list:
+    def get_positions(self, id: int, args: dict) -> list:
         '''Get positions for the trade'''
 
-        return f'positions for trade_{id}'
+        trade = self.__get_trade(id)
+        if 'portfolio_id' in args and args['portfolio_id']:
+            portfolio = db_session.query(Portfolio).get(args['portfolio_id'])
+            positions = portfolio.account_positions
+        else:
+            pendings: list[Pending] = trade.pendings
+            ids = [pending.id for pending in pendings]
+            positions = db_session.query(AccountPosition).filter(
+                AccountPosition.pending_id.in_(ids)
+            ).all()
+
+        return [position.as_dict() for position in positions]
 
 
     def update_positions(self, id: int, body: dict) -> dict:
         '''Update positions for the trade'''
 
-        return f'update_positions for trade_{id}'
+        positions = body['positions']
+        trade = self.__get_trade(id)
+        positions: list[AccountPosition] = get_account_positions(positions)
+        update_account_positions(trade, positions)
+
+        return trade.as_dict()
 
 
     def get_prices(self, id: int) -> list:
         '''Get prices for the trade'''
 
-        return f'prices for trade_{id}'
+        trade = self.__get_trade(id)
+        detail = get_trade_prices(trade)
+        if detail is None:
+            return []
+        else:
+            return [p.as_dict() for p in detail['price_object']]
 
 
     def update_prices(self, id: int, body: dict) -> dict:
         '''Update prices for the trade'''
 
-        return f'update prices for trade_{id}'
+        if 'iex' not in body or not body['iex']:
+            prices = None
+        else:
+            prices = body['prices']
+        
+        trade = self.__get_trade(id)
+        result = update_trade_prices(trade, prices)
+
+        if isinstance(result, str):
+            return {'error': result}, 400
+        else:
+            return {'result': 'success'}
 
 
     def get_requests(self, id: int) -> list:
         '''Get all requests for the trade'''
 
-        return f'requests for trade_{id}'
+        trade = self.__get_trade(id)
+        return {
+            'requests': get_requests(trade)
+        }
+
+
+    def __get_trade(self, id: int) -> Trade:
+
+        return db_session.query(Trade).get(id)

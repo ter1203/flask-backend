@@ -13,7 +13,7 @@ class PortfolioParser():
         if not self.create:
             self.create = reqparse.RequestParser()
             self.create.add_argument('name', type=str, required=True, location='json')
-            self.create.add_argument('model_id', type=int, location='json')
+            # self.create.add_argument('model_id', type=int, location='json')
 
         return self.create.parse_args(req)
 

@@ -48,7 +48,7 @@ class PortfolioAccounts(Resource):
     @portfolio.doc('update the portfolio accounts')
     def put(self, port_id: int):
 
-        return view.get_accounts(port_id)
+        return view.update_accounts(port_id, request.json)
 
 
 @portfolio.route('/<int:port_id>/model')
@@ -57,4 +57,4 @@ class PortfolioModel(Resource):
     @portfolio.doc('update the portfolio model')
     def put(self, port_id: int):
 
-        return view.get_models(port_id)
+        return view.update_model(port_id, request.json)

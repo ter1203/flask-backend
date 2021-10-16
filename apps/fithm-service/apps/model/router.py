@@ -11,7 +11,7 @@ class ModelList(Resource):
     @model.doc('get all models')
     def get(self):
 
-        return view.get_models(request.args)
+        return view.get_models()
 
 
     @model.doc('create a model')
@@ -48,3 +48,12 @@ class ModelPosition(Resource):
     def put(self, model_id: int):
 
         return view.update_model_position(model_id, request.json)
+
+
+@model.route('/public')
+class PublicModels(Resource):
+
+    @model.doc('get public models')
+    def get(self):
+
+        return view.public_models()

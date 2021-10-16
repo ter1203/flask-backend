@@ -78,7 +78,10 @@ class TradePositions(Resource):
     @trade.doc('get positions')
     def get(self, trade_id: int):
 
-        return forward_request()
+        parser: TradeParser = container.get(TradeParser)
+        params = parser.parse_get_positions(request)
+
+        return forward_request(params=params)
 
 
     @trade.doc('update positions')

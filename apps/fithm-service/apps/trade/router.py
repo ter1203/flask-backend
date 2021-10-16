@@ -57,7 +57,7 @@ class TradePortfolios(Resource):
     @trade.doc('add portfolios')
     def post(self, trade_id: int):
 
-        return view.get_portfolios(trade_id)
+        return view.update_portfolios(trade_id, request.json)
 
 
 @trade.route('/<int:trade_id>/positions')
@@ -66,7 +66,8 @@ class TradePositions(Resource):
     @trade.doc('get positions')
     def get(self, trade_id: int):
 
-        return view.get_positions(trade_id)
+        args = request.args
+        return view.get_positions(trade_id, args)
 
 
     @trade.doc('update positions')

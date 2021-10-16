@@ -106,6 +106,7 @@ class Pending(Base):
     portfolio_id = Column(Integer, ForeignKey('portfolios.id'), nullable=False)
     portfolio_name = Column(String)
     model_id = Column(Integer, ForeignKey('models.id'))
+    model = relationship('Model', back_populates='pendings')
     trade = relationship("Trade", back_populates="pendings")
     portfolio = relationship("Portfolio", back_populates="pendings")
     account_positions = relationship(
