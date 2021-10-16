@@ -1,35 +1,37 @@
 from flask_restx import Namespace, Resource
 from flask import request
+from .view import AccountView
 
 account = Namespace('account', path='/accounts')
+view = AccountView()
 
-
-@account.route('/')
+@account.route('')
 class Accounts(Resource):
 
     @account.doc('get accounts')
     def get(self):
         '''List all accounts'''
 
-        return f'Welcome list'
+        return view.get_accounts()
+
 
     @account.doc('create account')
     def post(self):
         '''Create an account for a user'''
 
-        param = request.json()
-        return f'Create an account: {param}'
+        return view.create_account(request.json)
 
 
-@account.route('/<account_id>')
+@account.route('/<int:account_id>')
 class Account(Resource):
 
     @account.doc('get account info')
     def get(self, account_id: str):
 
-        return f'Welcome {account_id}'
+        return view.get_account(account_id)
+
 
     @account.doc('delete account')
     def delete(self, account_id: str):
 
-        return f'Delete {account_id}'
+        return view.delete_account(account_id)

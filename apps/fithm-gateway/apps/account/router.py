@@ -3,20 +3,18 @@ from flask import request, current_app
 from .lib.parser import AccountParser
 from libs.depends.entry import container
 from libs.helper.forward import forward_request
-
 from libs.middleware.auth import login_required, active_required
 
 account = Namespace('account', path='/accounts', decorators=[active_required(), login_required()])
 
-@account.route('/')
+@account.route('')
 class Accounts(Resource):
 
     @account.doc('get accounts')
     def get(self):
         '''List all accounts'''
 
-        result = forward_request()
-        return f'Welcome {result}'
+        return forward_request()
 
 
     @account.doc('create account')
@@ -26,20 +24,20 @@ class Accounts(Resource):
         parser: AccountParser = container.get(AccountParser)
         param = parser.parse_create(request)
 
-        return f'Create an account: {param}'
+        return forward_request(body=param)
 
 
-@account.route('/<account_id>')
+@account.route('/<int:account_id>')
 class Account(Resource):
 
     @account.doc('get account info')
     def get(self, account_id: str):
 
-        return f'Welcome {account_id}'
+        return forward_request()
 
 
     @account.doc('delete account')
     def delete(self, account_id: str):
 
-        return f'Delete {account_id}'
+        return forward_request()
     

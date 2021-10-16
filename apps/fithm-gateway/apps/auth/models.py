@@ -68,4 +68,3 @@ class User(Base):
             'last_name': self.last_name,
             'phone_number': self.phone_number,
         }
-

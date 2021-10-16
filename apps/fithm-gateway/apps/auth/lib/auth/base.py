@@ -4,7 +4,7 @@ from flask import current_app, abort, Request
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from libs.database import db_session
-from apps.user.models import User
+from apps.auth.models import User
 
 class AuthBase:
     '''Authentication helper'''

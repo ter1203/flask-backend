@@ -1,4 +1,4 @@
-from apps.user.models import User, Role, RolesUsers
+from apps.auth.models import User, Role, RolesUsers
 from apps.account.models import Account, AccountPosition
 from apps.model.models import Model, ModelPosition
 from apps.portfolio.models import Portfolio
