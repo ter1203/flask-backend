@@ -2,13 +2,29 @@
 
 ### 1. Build the containers using the command.
 
-`docker-compose -f docker-compose.yml -f docker-compose.dev.yml up`
+`docker-compose -f docker-compose.yml -f docker-compose.dev.yml build`
 
-### 2. Set some environment variables and run the containers. You can make a script for this purpose. Sample script is given below.
+### 2. Create tables and default data. Postgres user and password need to be same as the next step
 
 `set POSTGRES_USER=andrii`
 
-`set POSTGRES_PASSWORD=timeisgold`
+`set POSTGRES_PASSWORD=11111111`
+
+`set SECRET_KEY=test_sec_key`
+
+`set FITHM_ADMIN_MAIL=info@fithm.com`
+
+`set FITHM_ADMIN_PASS=Horse@20180902`
+
+`set FLASK_APP=apps\fithm-gateway\manage`
+
+`flask db create`
+
+### 3. Set some environment variables and run the containers. You can make a script for this purpose. Sample script is given below.
+
+`set POSTGRES_USER=andrii`
+
+`set POSTGRES_PASSWORD=11111111`
 
 `set POSTGRES_DB=fithm`
 
