@@ -2,6 +2,12 @@
 
 ### 1. Build the containers using the command.
 
+`set POSTGRES_USER=andrii`
+
+`set POSTGRES_PASSWORD=11111111`
+
+`set POSTGRES_DB=fithm`
+
 `docker-compose -f docker-compose.yml -f docker-compose.dev.yml build`
 
 ### 2. Create tables and default data. Postgres user and password need to be same as the next step
