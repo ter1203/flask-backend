@@ -3,7 +3,7 @@ from libs.database import db_session
 
 
 def get_accounts(ids: list[int]) -> list[Account]:
-    
+
     return db_session.query(Account).filter(Account.id.in_(ids)).all()
 
 
