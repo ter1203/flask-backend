@@ -44,7 +44,7 @@ services:
         ENVIRONMENT: ${ENVIRONMENT:-prod}
     image: gateway
     container_name: gateway
-    command: bash -c "cd src && gunicorn -w 4 -b 0.0.0.0:5000 main:app"
+    command: bash -c "cd src && chmod a+x start.sh && ./start.sh"
     depends_on:
       - database
     restart: on-failure

@@ -8,6 +8,10 @@ from settings import FITHM_ADMIN_MAIL, FITHM_ADMIN_PASS
 def default_values():
     '''Populate default values'''
 
+    admin_count = db_session.query(User).filter(User.username == 'admin').count()
+    if admin_count:
+        return
+
     # add roles
     admin_role = Role(
         name=RoleValues.admin.value,
