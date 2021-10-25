@@ -26,6 +26,11 @@ WORKDIR $WORKDIR
 COPY apps/fithm-gateway/requirements.txt .
 COPY apps/fithm-gateway/requirements_dev.txt .
 
+USER root
+COPY apps/fithm-gateway/start.sh /usr/bin/
+RUN chmod +x /usr/bin/start.sh
+
+USER $UNAME
 RUN pip install -r requirements.txt
 RUN if [ "x$ENVIRONMENT" = "xprod" ] ; \
     then echo "Production build, no dev dependencies" && pip install -r requirements.txt ; \

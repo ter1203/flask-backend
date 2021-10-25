@@ -44,7 +44,7 @@ services:
         ENVIRONMENT: ${ENVIRONMENT:-prod}
     image: gateway
     container_name: gateway
-    command: bash -c "cd src && ./start.sh"
+    command: bash -c "start.sh"
     depends_on:
       - database
     restart: on-failure
