@@ -13,7 +13,7 @@ view = AuthView()
 
 @auth.route('')
 class Signup(Resource):
-    '''User signup, update, delete'''
+    '''User signup'''
 
     @auth.doc('sign-up new user')
     def post(self):

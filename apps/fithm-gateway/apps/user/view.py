@@ -6,6 +6,13 @@ from apps.models import User
 
 class UserView:
 
+    def get(self):
+        '''Get the user'''
+
+        user: User = g.user
+        return user.as_dict()
+
+
     def update(self, param: dict):
         '''Update user'''
 

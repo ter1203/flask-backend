@@ -51,18 +51,6 @@ class AuthView:
         return user.as_dict()
 
 
-    def update(self, param: dict):
-        '''Update user'''
-
-        user: User = g.user
-
-        for key in param:
-            setattr(user, key, param[key])
-
-        db_session.commit()
-        return user.as_dict()
-
-
     def delete(self):
         '''Delete user'''
 
