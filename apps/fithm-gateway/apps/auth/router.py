@@ -1,4 +1,4 @@
-from flask_restx import Namespace, Resource, cors
+from flask_restx import Namespace, Resource
 from flask import request
 from .lib.parser import AuthParser
 from .lib.validator import AuthValidator
@@ -7,7 +7,7 @@ from libs.depends.entry import container
 from libs.middleware.auth import login_required
 
 
-auth = Namespace('auth', path='/auth', decorators=[cors.crossdomain(origin="*")])
+auth = Namespace('auth', path='/auth')
 view = AuthView()
 
 

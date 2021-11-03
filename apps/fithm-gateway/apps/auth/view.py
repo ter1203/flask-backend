@@ -79,7 +79,10 @@ class AuthView:
         user.access = str(uuid4())
         db_session.commit()
 
-        return self.authenticator.create_tokens(user.id, user.access)
+        return {
+            'user': user.as_dict(),
+            'tokens': self.authenticator.create_tokens(user.id, user.access)
+        }
 
 
     def signout(self):

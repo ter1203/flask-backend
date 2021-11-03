@@ -63,6 +63,7 @@ class User(Base):
             'id': self.id,
             'email': self.email,
             'username': self.username,
+            'active': self.active,
             'company': self.company,
             'first_name': self.first_name,
             'last_name': self.last_name,
