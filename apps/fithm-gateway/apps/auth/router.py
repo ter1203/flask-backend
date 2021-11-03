@@ -1,17 +1,17 @@
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, cors
 from flask import request
 from .lib.parser import AuthParser
 from .lib.validator import AuthValidator
 from .view import AuthView
 from libs.depends.entry import container
-from libs.middleware.auth import login_required, active_required
+from libs.middleware.auth import login_required
 
 
-auth = Namespace('auth', path='/auth')
+auth = Namespace('auth', path='/auth', decorators=[cors.crossdomain(origin="*")])
 view = AuthView()
 
 
-@auth.route('')
+@auth.route('/signup')
 class Signup(Resource):
     '''User signup'''
 

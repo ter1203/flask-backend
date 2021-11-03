@@ -1,8 +1,9 @@
 from flask import Blueprint
 from flask_restx import Api
+from flask_cors import cross_origin
 
 api_blueprint = Blueprint('api', __name__)
-api_v1 = Api(api_blueprint, doc='/docs')
+api_v1 = Api(api_blueprint, doc='/docs', decorators=[cross_origin()])
 
 from .auth.router import auth
 api_v1.add_namespace(auth)

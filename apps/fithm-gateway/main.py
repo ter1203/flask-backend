@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_mail import Mail
 from config import Config
 from libs.database import init_db
@@ -18,6 +19,7 @@ def create_app():
     from apps.api_v1 import api_blueprint as api_v1
     app.register_blueprint(api_v1, url_prefix='/api/v1')
 
+    CORS(app)
     init_middlewares(app)
     return app
 
