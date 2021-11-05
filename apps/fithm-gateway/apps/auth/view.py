@@ -1,12 +1,12 @@
 from datetime import datetime
 from uuid import uuid4
 from flask import abort, request, g, current_app
-from libs.email.message import send_mail_template
+from libs.email.message import make_mail, send_msg
 from libs.database import db_session
 from libs.depends.entry import container
 from .lib.auth.authenticator import Authenticator
-
 from apps.models import User, Business
+from threading import Thread
 
 
 class AuthView:
@@ -40,7 +40,10 @@ class AuthView:
         db_session.add(business)
         db_session.commit()
 
-        self.__send_confirm_mail(user)
+        msg = self.__make_confirm_mail(user)
+        def post_request():
+            send_msg(msg)
+        Thread(target=post_request).start()
 
         return user.as_dict()
 
@@ -97,17 +100,16 @@ class AuthView:
         '''Confirm email'''
 
         self.authenticator.confirm_email(token)
-        return {
-            'result': 'success'
-        }
+        return { 'result': 'success' }
 
 
     def send_confirm(self):
         '''Send confirm email'''
 
-        self.__send_confirm_mail(g.user)
+        msg = self.__make_confirm_mail(g.user)
+        send_msg(msg)
 
-        return { 'result': 'email was sent' }
+        return { 'result': 'success' }
 
 
     def forgot_password(self, email: str):
@@ -118,8 +120,7 @@ class AuthView:
 
         reset_token = self.authenticator.create_reset_token(user.id)
 
-        # Should be replaced with { 'result': 'email was sent' }
-        return send_mail_template(
+        msg = make_mail(
             'Reset your password',
             current_app.config['ADMIN_MAIL_USER'],
             [user.email],
@@ -127,6 +128,10 @@ class AuthView:
             app_title='fithm.com',
             link=reset_token
         )
+
+        send_msg(msg)
+
+        return { 'result': 'success' }
 
 
     def reset_password(self, reset_token: str, password: str):
@@ -139,17 +144,15 @@ class AuthView:
         user.password = self.authenticator.hash_password(password)
         db_session.commit()
 
-        return {
-            'result': 'success'
-        }
+        return { 'result': 'success' }
 
 
-    def __send_confirm_mail(self, user: User):
+    def __make_confirm_mail(self, user: User):
         '''Send confirm email'''
 
         token = self.authenticator.create_confirm_token(user.id)
         base = current_app.config['BASE_URL']
-        send_mail_template(
+        return make_mail(
             'Confirm your email',
             current_app.config['ADMIN_MAIL_USER'],
             [user.email],

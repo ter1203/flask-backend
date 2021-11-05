@@ -1,3 +1,4 @@
+import logging
 from typing import List
 from flask_mail import Mail, Message
 from flask import render_template, Flask, current_app
@@ -23,18 +24,23 @@ def send_mail(
     mail.send(msg)
 
 
-def send_mail_template(
+def make_mail(
     title: str,
     sender: str,
     recipients: List[str],
     template: str,
     **kwargs
-):
-    '''Send html mail'''
+) -> Message:
+    '''Make html email from template'''
 
     msg = Message(title, sender=sender, recipients=recipients)
     msg.html = render_template(template, **kwargs)
 
-    current_app.logger.debug(msg.html)
+    return msg
 
+
+def send_msg(msg: Message):
+    '''Send message'''
+
+    logging.debug(msg.html)
     mail.send(msg)
