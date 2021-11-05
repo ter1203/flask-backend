@@ -8,6 +8,7 @@ from settings import (
     FITHM_ADMIN_PASS,
     FITHM_SERVICE_URL,
     SECRET_KEY,
+    BASE_URL,
     DEBUG
 )
 from logging.config import dictConfig
@@ -40,6 +41,7 @@ class Config:
 
     ALLOWED_FILES = ['png', 'jpg', 'jpeg', 'gif']
 
+    BASE_URL = BASE_URL
     SERVICE_URL = FITHM_SERVICE_URL
     SECRET_KEY = SECRET_KEY
     DEBUG = DEBUG

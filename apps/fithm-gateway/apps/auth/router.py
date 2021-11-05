@@ -4,16 +4,16 @@ from .lib.parser import AuthParser
 from .lib.validator import AuthValidator
 from .view import AuthView
 from libs.depends.entry import container
-from libs.middleware.auth import login_required, active_required
+from libs.middleware.auth import login_required
 
 
 auth = Namespace('auth', path='/auth')
 view = AuthView()
 
 
-@auth.route('')
+@auth.route('/signup')
 class Signup(Resource):
-    '''User signup, update, delete'''
+    '''User signup'''
 
     @auth.doc('sign-up new user')
     def post(self):

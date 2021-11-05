@@ -1,12 +1,12 @@
 from datetime import datetime
 from uuid import uuid4
 from flask import abort, request, g, current_app
-from libs.email.message import send_mail_template
+from libs.email.message import make_mail, send_msg
 from libs.database import db_session
 from libs.depends.entry import container
 from .lib.auth.authenticator import Authenticator
-
 from apps.models import User, Business
+from threading import Thread
 
 
 class AuthView:
@@ -40,26 +40,11 @@ class AuthView:
         db_session.add(business)
         db_session.commit()
 
-        send_mail_template(
-            'Confirm your email', 
-            current_app.config['ADMIN_MAIL_USER'],
-            [email],
-            'email_confirm.html',
-            app_title='fithm.com',
-            link=self.authenticator.create_confirm_token(user.id)
-        )
-        return user.as_dict()
+        msg = self.__make_confirm_mail(user)
+        def post_request():
+            send_msg(msg)
+        Thread(target=post_request).start()
 
-
-    def update(self, param: dict):
-        '''Update user'''
-
-        user: User = g.user
-
-        for key in param:
-            setattr(user, key, param[key])
-
-        db_session.commit()
         return user.as_dict()
 
 
@@ -70,9 +55,7 @@ class AuthView:
         db_session.delete(user)
         db_session.commit()
 
-        return {
-            'result': 'success'
-        }
+        return { 'result': 'success' }
 
 
     def signin(self, email: str, password: str):
@@ -91,7 +74,10 @@ class AuthView:
         user.access = str(uuid4())
         db_session.commit()
 
-        return self.authenticator.create_tokens(user.id, user.access)
+        return {
+            'user': user.as_dict(),
+            'tokens': self.authenticator.create_tokens(user.id, user.access)
+        }
 
 
     def signout(self):
@@ -103,34 +89,23 @@ class AuthView:
         user.last_login_ip = request.remote_addr
         db_session.commit()
 
-        return {
-            'last_login': user.last_login_at.isoformat()
-        }
+        return { 'last_login': user.last_login_at.isoformat() }
 
 
     def confirm(self, token: str):
         '''Confirm email'''
 
         self.authenticator.confirm_email(token)
-        return {
-            'result': 'success'
-        }
+        return { 'result': 'success' }
 
 
     def send_confirm(self):
+        '''Send confirm email'''
 
-        user: User = g.user
-        token = self.authenticator.create_confirm_token(user.id)
+        msg = self.__make_confirm_mail(g.user)
+        send_msg(msg)
 
-        # Should be replaced with { 'result': 'email was sent' }
-        return send_mail_template(
-            'Confirm your email',
-            current_app.config['ADMIN_MAIL_USER'],
-            [user.email],
-            'email_confirm.html',
-            app_title='fithm.com',
-            link=token
-        )
+        return { 'result': 'success' }
 
 
     def forgot_password(self, email: str):
@@ -141,15 +116,18 @@ class AuthView:
 
         reset_token = self.authenticator.create_reset_token(user.id)
 
-        # Should be replaced with { 'result': 'email was sent' }
-        return send_mail_template(
-            'Reset your password', 
+        msg = make_mail(
+            'Reset your password',
             current_app.config['ADMIN_MAIL_USER'],
             [user.email],
             'reset_password.html',
             app_title='fithm.com',
             link=reset_token
         )
+
+        send_msg(msg)
+
+        return { 'result': 'success' }
 
 
     def reset_password(self, reset_token: str, password: str):
@@ -162,6 +140,19 @@ class AuthView:
         user.password = self.authenticator.hash_password(password)
         db_session.commit()
 
-        return {
-            'result': 'success'
-        }
+        return { 'result': 'success' }
+
+
+    def __make_confirm_mail(self, user: User):
+        '''Send confirm email'''
+
+        token = self.authenticator.create_confirm_token(user.id)
+        base = current_app.config['BASE_URL']
+        return make_mail(
+            'Confirm your email',
+            current_app.config['ADMIN_MAIL_USER'],
+            [user.email],
+            'email_confirm.html',
+            app_title='fithm.com',
+            link=f'{base}/auth/confirm?confirm_token={token}'
+        )

@@ -14,6 +14,7 @@ FITHM_ADMIN_PASS = os.environ.get('FITHM_ADMIN_PASS')
 FITHM_QUOVO_KEY = os.environ.get('FITHM_QUOVO_KEY')
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
+BASE_URL = os.environ.get('FITHM_BASE_URL') or 'http://localhost:3000'
 FITHM_SERVICE_URL = os.environ.get('FITHM_SERVICE_URL') or 'http://tradeshop:5050'
 POSTGRES_HOST = os.environ.get('POSTGRES_HOST') or 'localhost'
 POSTGRES_PORT = os.environ.get('POSTGRES_PORT') or 5432

@@ -14,9 +14,13 @@ view = UserView()
 class UserResource(Resource):
     '''User update, delete'''
 
+    @user.doc('get user')
+    def get(self):
+
+        return view.get()
+
+
     @user.doc('update user')
-    @login_required()
-    @active_required()
     def put(self):
 
         parser: UserParser = container.get(UserParser)
@@ -26,8 +30,6 @@ class UserResource(Resource):
 
 
     @user.doc('delete user')
-    @login_required()
-    @active_required()
     def delete(self):
 
         return view.delete()
