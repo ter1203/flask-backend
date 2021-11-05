@@ -55,9 +55,7 @@ class AuthView:
         db_session.delete(user)
         db_session.commit()
 
-        return {
-            'result': 'success'
-        }
+        return { 'result': 'success' }
 
 
     def signin(self, email: str, password: str):
@@ -91,9 +89,7 @@ class AuthView:
         user.last_login_ip = request.remote_addr
         db_session.commit()
 
-        return {
-            'last_login': user.last_login_at.isoformat()
-        }
+        return { 'last_login': user.last_login_at.isoformat() }
 
 
     def confirm(self, token: str):
