@@ -115,6 +115,7 @@ class AuthView:
             abort(404, 'User not found')
 
         reset_token = self.authenticator.create_reset_token(user.id)
+        base = current_app.config['BASE_URL']
 
         msg = make_mail(
             'Reset your password',
@@ -122,7 +123,7 @@ class AuthView:
             [user.email],
             'reset_password.html',
             app_title='fithm.com',
-            link=reset_token
+            link=f'{base}/auth/resetpass?reset_token={reset_token}'
         )
 
         send_msg(msg)
@@ -148,6 +149,7 @@ class AuthView:
 
         token = self.authenticator.create_confirm_token(user.id)
         base = current_app.config['BASE_URL']
+
         return make_mail(
             'Confirm your email',
             current_app.config['ADMIN_MAIL_USER'],
