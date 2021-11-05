@@ -1,6 +1,6 @@
 from typing import List
 from flask_mail import Mail, Message
-from flask import render_template, Flask
+from flask import render_template, Flask, current_app
 
 mail: Mail = None
 def init_mail(app: Flask):
@@ -35,4 +35,6 @@ def send_mail_template(
     msg = Message(title, sender=sender, recipients=recipients)
     msg.html = render_template(template, **kwargs)
 
-    return msg.html
+    current_app.logger.debug(msg.html)
+
+    mail.send(msg)

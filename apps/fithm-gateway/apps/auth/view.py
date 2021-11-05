@@ -40,14 +40,8 @@ class AuthView:
         db_session.add(business)
         db_session.commit()
 
-        send_mail_template(
-            'Confirm your email', 
-            current_app.config['ADMIN_MAIL_USER'],
-            [email],
-            'email_confirm.html',
-            app_title='fithm.com',
-            link=self.authenticator.create_confirm_token(user.id)
-        )
+        self.__send_confirm_mail(user)
+
         return user.as_dict()
 
 
@@ -109,19 +103,11 @@ class AuthView:
 
 
     def send_confirm(self):
+        '''Send confirm email'''
 
-        user: User = g.user
-        token = self.authenticator.create_confirm_token(user.id)
+        self.__send_confirm_mail(g.user)
 
-        # Should be replaced with { 'result': 'email was sent' }
-        return send_mail_template(
-            'Confirm your email',
-            current_app.config['ADMIN_MAIL_USER'],
-            [user.email],
-            'email_confirm.html',
-            app_title='fithm.com',
-            link=token
-        )
+        return { 'result': 'email was sent' }
 
 
     def forgot_password(self, email: str):
@@ -134,7 +120,7 @@ class AuthView:
 
         # Should be replaced with { 'result': 'email was sent' }
         return send_mail_template(
-            'Reset your password', 
+            'Reset your password',
             current_app.config['ADMIN_MAIL_USER'],
             [user.email],
             'reset_password.html',
@@ -156,3 +142,18 @@ class AuthView:
         return {
             'result': 'success'
         }
+
+
+    def __send_confirm_mail(self, user: User):
+        '''Send confirm email'''
+
+        token = self.authenticator.create_confirm_token(user.id)
+        base = current_app.config['BASE_URL']
+        send_mail_template(
+            'Confirm your email',
+            current_app.config['ADMIN_MAIL_USER'],
+            [user.email],
+            'email_confirm.html',
+            app_title='fithm.com',
+            link=f'{base}/auth/confirm?confirm_token={token}'
+        )

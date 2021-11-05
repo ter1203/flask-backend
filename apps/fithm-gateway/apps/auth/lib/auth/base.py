@@ -152,15 +152,11 @@ class AuthBase:
     def __get_user_from_token(self, token: str, sec_key: str) -> tuple:
         '''Get user from token'''
 
-        try:
-            payload = jwt.decode(token, sec_key, ['HS256'])
-            if self.__is_expired(payload):
-                abort(401, 'Token expired')
+        payload = jwt.decode(token, sec_key, ['HS256'])
+        if self.__is_expired(payload):
+            abort(401, 'Token expired')
 
-            return (payload['id'], payload)
-
-        except Exception as ex:
-            abort(400, 'Invalid token')
+        return (payload['id'], payload)
 
 
     def __is_expired(self, payload: Dict):
