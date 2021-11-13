@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  tradeshop:
+    build:
+      args: # values for Dockerfile
+        ENVIRONMENT: ${ENVIRONMENT:-dev}
+    command: bash -c "cd src && gunicorn -w 1 --reload -b 0.0.0.0:5050 main:app --log-level debug --log-file /app/logs/tradeshop.log"
+    environment:
+      ENVIRONMENT: dev
+    volumes:
+      - ./logs/:/app/logs/
+
+  gateway:
+    build:
+      args: # values for Dockerfile
+        ENVIRONMENT: ${ENVIRONMENT:-dev}
+    volumes:
+      - ./logs/:/app/logs/
+    environment:
+      ENVIRONMENT: dev

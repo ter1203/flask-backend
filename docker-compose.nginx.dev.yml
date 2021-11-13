@@ -1,0 +1,5 @@
+services:
+  reverse_proxy:
+    volumes:
+      - ./nginx/conf/dev.conf:/etc/nginx/conf.d/default.conf
+      - ../../../frontend/fithm_front/dist/:/srv/frontend/

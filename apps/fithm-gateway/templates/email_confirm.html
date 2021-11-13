@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block style %}
+<style>
+  h1 {
+    text-align: center;
+  }
+
+  main p {
+    font-size: 16px;
+  }
+
+  main .action a {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    margin: auto;
+    display: block;
+    font-weight: 500;
+    max-width: 160px;
+    text-align: center;
+    padding: 8px 16px;
+    font-size: 18px;
+    line-height: 1.5;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+
+  footer span {
+    font-size: 16px;
+    font-weight: 500;
+  }
+</style>
+{% endblock %}
+
+{% block header %}
+<h1>Welcome to {{ app_title }}!</h1>
+{% endblock %}
+
+{% block content %}
+<p>Continue signing up for Fithm.com by clicking the below link.</p>
+<div class='action'>
+  <a href="{{ link }}" target="_blank">Confirm your email</a>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>{{ app_title }}</title>
+  <style>
+    body {
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    }
+
+    header,
+    footer {
+      display: block;
+      text-align: center;
+      margin: 16px 0;
+    }
+
+    header {
+      flex-direction: column;
+    }
+
+    main {
+      width: 100%;
+      max-width: 480px;
+      margin: auto;
+      margin-bottom: 48px;
+      margin-top: 48px;
+    }
+
+    header img {
+      width: 240px;
+      height: auto;
+      display: block;
+      margin: auto;
+    }
+
+    footer span {
+      display: block;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  </style>
+  {% block style %}{% endblock %}
+</head>
+
+<body>
+  <header>
+  </header>
+  <main>
+    {% block header %}{% endblock %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    <span>
+      &copy; 2021 www.fithm.com. All Rights Reserved.
+    </span>
+  </footer>
+</body>
+
+</html>
