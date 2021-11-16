@@ -65,7 +65,7 @@ class AccountView:
         }
 
 
-    def __get_account(id: int) -> Account:
+    def __get_account(self, id: int) -> Account:
 
         account = db_session.query(Account).get(id)
         if not account:
