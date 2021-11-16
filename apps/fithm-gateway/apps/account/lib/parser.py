@@ -7,7 +7,6 @@ class AccountParser:
 
     def __init__(self):
         self.create = None
-        self.list = None
         self.update = None
 
 
@@ -19,3 +18,12 @@ class AccountParser:
             self.create.add_argument('portfolio_id', type=str, location='json')
 
         return self.create.parse_args(req)
+
+
+    def parse_update(self, req: Request) -> dict:
+        if not self.update:
+            self.update = reqparse.RequestParser()
+            self.update.add_argument('broker_name', type=str, location='json')
+            self.update.add_argument('account_number', type=str, location='json')
+
+        return self.update.parse_args(req)

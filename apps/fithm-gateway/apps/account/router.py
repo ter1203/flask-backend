@@ -36,6 +36,16 @@ class Account(Resource):
         return forward_request()
 
 
+    @account.doc('update account info')
+    def put(self, account_id: str):
+        '''Update an existing account'''
+
+        parser: AccountParser = container.get(AccountParser)
+        param = parser.parse_update(request)
+
+        return forward_request(body=param)
+
+
     @account.doc('delete account')
     def delete(self, account_id: str):
 

@@ -53,6 +53,19 @@ class AccountView:
         return account.as_dict()
 
 
+    def update_account(self, id: int, body: dict) -> dict:
+        '''Update an existing account'''
+
+        account = self.__get_account(id)
+        if 'account_number' in body:
+            account.account_number = body['account_number']
+        if 'broker_name' in body:
+            account.broker_name = body['broker_name']
+
+        db_session.commit()
+        return account.as_dict()
+
+
     def delete_account(self, id: int):
         '''Delete an account'''
 
@@ -60,9 +73,9 @@ class AccountView:
         db_session.delete(account)
         db_session.commit()
 
-        return {
-            'result': 'success'
-        }
+        # todo update prices when account is
+
+        return { 'result': 'success' }
 
 
     def __get_account(self, id: int) -> Account:
