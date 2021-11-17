@@ -24,9 +24,7 @@ class Account(Base):
 
     def as_dict(self):
         result = {'id': self.id, 'user_id': self.business.user_id, 'account_number': self.account_number,
-                  'broker_name': self.broker_name, 'portfolio_id': 'null'}
-        if self.portfolio_id:
-            result['portfolio_id'] = self.portfolio_id
+                  'broker_name': self.broker_name, 'portfolio_id': self.portfolio_id}
         return result
 
 
