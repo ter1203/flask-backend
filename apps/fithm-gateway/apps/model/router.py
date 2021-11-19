@@ -15,7 +15,7 @@ class ModelList(Resource):
     def get(self):
 
         parser: ModelParser = container.get(ModelParser)
-        params = parser.parse_create(request)
+        params = parser.parse_get_list(request)
 
         return forward_request(params=params)
 

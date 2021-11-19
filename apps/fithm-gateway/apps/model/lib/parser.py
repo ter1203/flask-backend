@@ -24,6 +24,7 @@ class ModelParser():
             self.create.add_argument('name', required=True, type=str, location='json')
             self.create.add_argument('keywords', required=True, type=list[str], location='json')
             self.create.add_argument('public', required=True, type=bool, location='json')
+            self.create.add_argument('description', required=True, type=str, location='json')
 
         return self.create.parse_args(req)
 

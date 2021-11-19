@@ -26,6 +26,7 @@ class ModelView:
         model = Model(
             business_id=g.business.id,
             name=body['name'],
+            description=body['description'],
             keywords=body['keywords'],
             is_public=body['public']
         )
@@ -49,6 +50,7 @@ class ModelView:
         model.name = body['name']
         model.keywords = body['keywords']
         model.is_public = body['public']
+        model.description = body['description']
 
         db_session.commit()
 

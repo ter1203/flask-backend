@@ -19,6 +19,7 @@ class Model(Base):
     id = Column(Integer, primary_key=True)
     business_id = Column(Integer, ForeignKey('businesses.id'), nullable=False)
     name = Column(String)
+    description = Column(String)
     keywords = Column("data", postgresql.ARRAY(String))
     is_public = Column(Boolean, default=False, nullable=False)
     business = relationship("Business", back_populates="models")
