@@ -27,7 +27,7 @@ class Model(Base):
     portfolio = relationship("Portfolio", back_populates="model")
 
     def as_dict(self):
-        result = {'id': self.id, 'name': self.name, 'keywords': [], 'allocation': 'null',
+        result = {'id': self.id, 'name': self.name, 'keywords': [], 'positions': None,
                   'is_public': str(self.is_public).lower()}
         if not self.is_public:
             result['user_id'] = self.business.user_id
