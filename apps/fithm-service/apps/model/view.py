@@ -10,11 +10,16 @@ class ModelView:
         pass
 
 
-    def get_models(self) -> list:
+    def get_models(self, args: dict) -> list:
         '''Get all models for the user'''
 
         business: Business = g.business
-        models: list[Model] = business.models
+        public = args['public'] == 'true'
+        current_app.logger.debug(args['public'])
+        models: list[Model] = (
+            self.public_models() if public
+            else filter(lambda model: not model.is_public, business.models)
+        )
         return {
             'models': [model.as_dict() for model in models]
         }
@@ -23,12 +28,13 @@ class ModelView:
     def create_model(self, body: dict) -> dict:
         '''Create a new model for the user'''
 
+        public = body['public']
         model = Model(
             business_id=g.business.id,
             name=body['name'],
             description=body['description'],
             keywords=body['keywords'],
-            is_public=body['public']
+            is_public=public
         )
         db_session.add(model)
         db_session.commit()
@@ -93,7 +99,7 @@ class ModelView:
 
     def public_models(self) -> list[Model]:
 
-        return db_session.query(Model).filter(Model.is_public).all()
+        return db_session.query(Model).filter(Model.is_public == True).all()
 
 
     def __get_model(self, id: int) -> Model:

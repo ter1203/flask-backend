@@ -13,7 +13,7 @@ class ModelParser():
     def parse_get_list(self, req: Request) -> dict:
         if not self.get:
             self.get = reqparse.RequestParser()
-            self.get.add_argument('public', type=bool, location='args')
+            self.get.add_argument('public', type=str, location='args')
 
         return self.get.parse_args(req)
 
