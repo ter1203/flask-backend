@@ -56,6 +56,7 @@ class PortfolioView:
         pendings = portfolio.pendings
         
         db_session.delete(portfolio)
+        db_session.commit()
         helpers.update_trade_for_portfolio_model(pendings, False)
 
         return {'result': 'success'}
