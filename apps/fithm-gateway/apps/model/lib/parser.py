@@ -13,7 +13,7 @@ class ModelParser():
     def parse_get_list(self, req: Request) -> dict:
         if not self.get:
             self.get = reqparse.RequestParser()
-            self.get.add_argument('public', type=bool, location='args')
+            self.get.add_argument('public', type=str, location='args')
 
         return self.get.parse_args(req)
 
@@ -24,6 +24,7 @@ class ModelParser():
             self.create.add_argument('name', required=True, type=str, location='json')
             self.create.add_argument('keywords', required=True, type=list[str], location='json')
             self.create.add_argument('public', required=True, type=bool, location='json')
+            self.create.add_argument('description', required=True, type=str, location='json')
 
         return self.create.parse_args(req)
 

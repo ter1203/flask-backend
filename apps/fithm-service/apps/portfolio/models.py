@@ -23,12 +23,11 @@ class Portfolio(Base):
                                      cascade="all, delete, delete-orphan")
 
     def as_dict(self):
-        result = {'id': self.id, 'user_id': self.business.user_id, 'name': self.name, 'model_id': 'null', 'model': 'null',
+        result = {'id': self.id, 'user_id': self.business.user_id, 'name': self.name, 'model': None,
                   'pendings': [], 'accounts': []}
         if self.accounts:
             result['accounts'] = [a.as_dict() for a in self.accounts]
-        if self.model_id:
-            result['model_id'] = self.model_id
+        if self.model:
             result['model'] = self.model.as_dict()
         if self.pendings:
             result['pendings'] = [p.as_dict() for p in self.pendings]
