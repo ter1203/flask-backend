@@ -144,6 +144,25 @@ class AuthView:
         return { 'result': 'success' }
 
 
+    def refresh(self, token: str):
+
+        current_app.logger.debug(f'user id = {token}')
+        user_id = self.authenticator.get_user_from_refresh(token)
+        user = db_session.query(User).get(user_id)
+        if not user:
+            abort(404, 'User not found')
+
+        user.current_login_at = datetime.utcnow()
+        user.current_login_ip = request.remote_addr
+        user.login_count = (user.login_count or 0) + 1
+        user.access = str(uuid4())
+        db_session.commit()
+
+        return {
+            'tokens': self.authenticator.create_tokens(user.id, user.access)
+        }
+
+
     def __make_confirm_mail(self, user: User):
         '''Send confirm email'''
 

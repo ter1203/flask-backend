@@ -92,3 +92,13 @@ class ResetPassword(Resource):
         param = parser.parse_reset_password(request)
 
         return view.reset_password(param['reset_token'], param['password'])
+
+
+@auth.route('/refresh')
+class RefreshToken(Resource):
+
+    def get(self):
+        parser: AuthParser = container.get(AuthParser)
+        param = parser.parse_refresh(request)
+
+        return view.refresh(param['token'])
