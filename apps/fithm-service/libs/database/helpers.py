@@ -156,5 +156,3 @@ def update_portfolio_accounts(portfolio: Portfolio, accounts: list[Account]):
 
     portfolio.accounts = accounts
     db_session.commit()
-
-

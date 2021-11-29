@@ -14,6 +14,7 @@ from libs.database import Base
 class Trade(Base):
     __tablename__ = 'trades'
     id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
     business_id = Column(Integer, ForeignKey('businesses.id'), nullable=False)
     created = Column(DateTime, nullable=False)
     status = Column(Boolean, nullable=False)
@@ -24,7 +25,7 @@ class Trade(Base):
                           cascade="all, delete, delete-orphan")
 
     def as_dict(self):
-        result = {'id': self.id, 'user_id': self.business.user_id, 'created': str(self.created), 'status': str(self.status),
+        result = {'id': self.id, 'name': self.name, 'user_id': self.business.user_id, 'created': str(self.created), 'status': str(self.status),
                   'pendings': [], 'prices': []}
         if self.pendings:
             pendings = []

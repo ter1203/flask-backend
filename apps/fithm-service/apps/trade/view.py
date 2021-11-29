@@ -25,10 +25,16 @@ class TradeView:
         }
 
 
-    def create_trade(self, body: dict) -> dict:
+    def create_trade(self, param: dict) -> dict:
         '''Create a new trade'''
 
-        trade = Trade(business_id=g.business.id, status=False, created=datetime.utcnow())
+        name = param['name']
+        trade = Trade(
+            business_id=g.business.id,
+            name=name,
+            status=False,
+            created=datetime.utcnow()
+        )
         db_session.add(trade)
         db_session.commit()
 

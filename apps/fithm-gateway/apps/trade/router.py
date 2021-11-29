@@ -21,7 +21,10 @@ class TradeList(Resource):
     @trade.doc('create a trade')
     def post(self):
 
-        return forward_request()
+        parser: TradeParser = container.get(TradeParser)
+        body = parser.parse_create(request)
+
+        return forward_request(body=body)
 
 
 @trade.route('/instructions')
