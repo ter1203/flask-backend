@@ -77,7 +77,7 @@ class TradeView:
         trade = self.__get_trade(id)
         port_ids = body['portfolios']
 
-        helpers.update_pendings_of_trade(trade, get_portfolios(port_ids))
+        helpers.trade_update_portfolios(trade, get_portfolios(port_ids))
         return trade.as_dict()
 
 
