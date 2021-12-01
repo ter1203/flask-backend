@@ -52,7 +52,9 @@ class TradeView:
         '''Update a trade'''
 
         status = body['status']
+        name = body['name']
         trade = self.__get_trade(id)
+        trade.name = name
         trade.status = status
         db_session.commit()
 
@@ -141,7 +143,7 @@ class TradeView:
         if isinstance(result, str):
             return {'error': result}, 400
         else:
-            return {'result': 'success'}
+            return self.__get_trade(id).as_dict()
 
 
     def get_requests(self, id: int) -> list:
