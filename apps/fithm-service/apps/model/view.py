@@ -70,7 +70,7 @@ class ModelView:
         pendings = model.pendings
         db_session.delete(model)
         db_session.commit()
-        helpers.update_trade_for_portfolio_model(pendings)
+        helpers.update_trades_for_pendings(pendings)
 
         return {
             'result': 'success'
@@ -92,7 +92,7 @@ class ModelView:
         db_session.commit()
 
         pendings: list[Pending] = model.pendings
-        helpers.update_trade_for_portfolio_model(pendings)
+        helpers.update_trades_for_pendings(pendings)
 
         return model.as_dict()
 

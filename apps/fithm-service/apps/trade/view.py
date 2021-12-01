@@ -62,7 +62,14 @@ class TradeView:
     def delete_trade(self, id: int):
         '''Delete a trade'''
 
-        return f'delete trade_{id}'
+        pendings = db_session.query(Pending).filter(Pending.trade_id == id)
+
+        trade = self.__get_trade(id)
+        db_session.delete(trade)
+        db_session.commit()
+
+        helpers.update_trades_for_pendings(pendings)
+        return { 'result': 'success' }
 
 
     def get_instructions(self, body: dict) -> list:
@@ -106,18 +113,18 @@ class TradeView:
         positions: list[AccountPosition] = get_account_positions(positions)
         update_account_positions(trade, positions)
 
-        return trade.as_dict()
+        return self.__get_trade(id).as_dict()
 
 
     def get_prices(self, id: int) -> list:
         '''Get prices for the trade'''
 
         trade = self.__get_trade(id)
-        detail = get_trade_prices(trade)
-        if detail is None:
+        prices = get_trade_prices(trade)
+        if prices is None:
             return []
         else:
-            return [p.as_dict() for p in detail['price_object']]
+            return [p.as_dict() for p in prices['price_object']]
 
 
     def update_prices(self, id: int, body: dict) -> dict:

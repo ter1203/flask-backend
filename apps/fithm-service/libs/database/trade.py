@@ -11,6 +11,7 @@ from iexfinance.stocks import Stock
 from datetime import datetime
 
 def remove_all_pending_positions(trade: Trade):
+    
     db_session.query(Price).filter(Price.trade_id == trade.id).delete(False)
     
     pending_ids = [p.id for p in trade.pendings]
@@ -23,10 +24,10 @@ def update_account_positions(trade: Trade, positions: list[AccountPosition]):
     if not len(positions):
         return remove_all_pending_positions(trade)
 
-    new, pending = prepare_update(trade, positions)
-    if new != None:
-        create_pending_account_positions(trade, new, pending)
-        remove_pending_account_positions(new, pending)
+    new_positions, pending_positions = prepare_update(trade, positions)
+    if new_positions != None:
+        create_pending_account_positions(trade, new_positions, pending_positions)
+        remove_pending_account_positions(new_positions, pending_positions)
 
 
 def get_trade_prices(trade: Trade, use: str = 'read'):
@@ -38,7 +39,9 @@ def get_trade_prices(trade: Trade, use: str = 'read'):
     df_prices.columns = ['price_object']
     df_price_details = pd.DataFrame([vars(p) for p in prices])
     if use == "read":
-        obj_detail = pd.concat([df_prices, df_price_details], axis=1).drop_duplicates(subset=['symbol'])
+        obj_detail = pd.concat([df_prices, df_price_details], axis=1).drop_duplicates(
+            subset=['symbol']
+        )
     else:
         obj_detail = pd.concat([df_prices, df_price_details], axis=1)
 
@@ -59,9 +62,9 @@ def update_trade_prices(trade: Trade, prices = None):
     current_prices = get_trade_prices(trade, use="write")
 
     df_price_unique = pd.DataFrame(price_unique).set_index(['symbol'])
-    current_prices = current_prices[current_prices['symbol'].isin([p['symbol'] for p in price_unique])].drop(
-        'price', axis=1
-    ).set_index(['symbol'])
+    current_prices = current_prices[
+        current_prices['symbol'].isin([p['symbol'] for p in price_unique])
+    ].drop('price', axis=1).set_index(['symbol'])
     current_prices['new_price'] = df_price_unique['price']
 
     def assign_it(row):
@@ -189,7 +192,7 @@ def prepare_update(trade: Trade, positions: list[AccountPosition]):
         return (None, None)
 
     pending_portfolios: list[Portfolio] = [p.portfolio for p in pendings]
-    pending_accounts: list[Account] = [a.accounts for a in pending_portfolios]
+    pending_accounts: list[list[Account]] = [a.accounts for a in pending_portfolios]
 
     pending_details = pd.DataFrame(
         [vars(p) for p in pendings]
@@ -203,9 +206,9 @@ def prepare_update(trade: Trade, positions: list[AccountPosition]):
 
     # check for positions being loaded that are not associated with any account in the trade
     pending_account_details.set_index(['broker_name', 'account_number'], inplace=True)
-    new_position_details = pd.DataFrame(positions)
-    new_position_details = pd.DataFrame(positions).groupby(['broker_name', 'account_number', 'symbol']).agg(
-        lambda x: x.astype(float).sum()).reset_index()
+    new_position_details = pd.DataFrame(positions).groupby(
+        ['broker_name', 'account_number', 'symbol']
+    ).agg(lambda x: x.astype(float).sum()).reset_index()
     new_account_details = new_position_details.drop_duplicates(
         subset=['broker_name', 'account_number']
     ).set_index(['broker_name', 'account_number'])
@@ -214,7 +217,7 @@ def prepare_update(trade: Trade, positions: list[AccountPosition]):
         current_app.logger.error('You have a position that is not associated with any account currently loaded in the trade.')
         return (None, None)
 
-    pending_account_position_details = [vars(ap) for pos_obj in pendings for ap in pos_obj.account_positions]
+    pending_account_position_details = [vars(ap) for pending in pendings for ap in pending.account_positions]
     new_position_details.set_index(['broker_name', 'account_number'], inplace=True)
     new_position_details = new_position_details.join(
         pending_account_details, on=['broker_name', 'account_number']
@@ -223,19 +226,22 @@ def prepare_update(trade: Trade, positions: list[AccountPosition]):
     return new_position_details, pending_account_position_details
 
 
-def create_pending_account_positions(trade: Trade, new_details, pending_details):
+def create_pending_account_positions(
+    trade: Trade, new_positions: pd.DataFrame, pending_positions: pd.DataFrame
+):
 
-    if len(pending_details) == 0:
-        additions = new_details
+    if len(pending_positions) == 0:
+        additions = new_positions
     else:
-        new_details.set_index(['broker_name', 'account_number', 'symbol'], inplace=True)
-        pending_account_position_details = pd.DataFrame(pending_details).set_index(
-            ['broker_name', 'account_number', 'symbol'])
+        new_positions.set_index(['broker_name', 'account_number', 'symbol'], inplace=True)
+        pending_account_position_details = pd.DataFrame(pending_positions).set_index(
+            ['broker_name', 'account_number', 'symbol']
+        )
         # with pd.option_context('display.max_rows', None, 'display.max_columns', None):
         #     print(additions, '\n', pending_account_position_details)
-        new_details['account_position_id'] = pending_account_position_details['id']
+        new_positions['account_position_id'] = pending_account_position_details['id']
         # print(additions.loc[:,['id', 'account_id', 'account_position_id']])
-        additions = new_details[new_details.loc[:, 'account_position_id'].isna()].reset_index()
+        additions = new_positions[new_positions.loc[:, 'account_position_id'].isna()].reset_index()
     if not additions.empty:
         additions['position'] = additions.apply(
             lambda row: AccountPosition(
@@ -249,34 +255,40 @@ def create_pending_account_positions(trade: Trade, new_details, pending_details)
             ),
             axis=1
         )
+
+        db_session.bulk_save_objects(additions['position'].tolist())
+        db_session.commit()
+
         additions['price'] = additions.apply(
             lambda row: Price(
-                account_position_id=row['new_account_positions_id'],
+                account_position_id=additions['position'].id,
                 trade_id=trade.id,
                 symbol=row['symbol']
             ),
             axis=1
         )
-
-        db_session.bulk_save_objects(additions['position'].tolist())
         db_session.bulk_save_objects(additions['price'].tolist())
         db_session.commit()
 
 
-def remove_pending_account_positions(new_details, pending_details):
+def remove_pending_account_positions(new_positions, pending_positions):
 
-    if len(pending_details) != 0:
-        # new_details.set_index(['broker_name', 'account_number', 'symbol'], inplace=True)
-        pending_details = pd.DataFrame(pending_details).set_index(
-            ['broker_name', 'account_number', 'symbol']
-        )
-        pending_details['account_position_id'] = new_details['id']
-        deletions = pending_details[pending_details.loc[:, 'account_position_id'].isna()].reset_index()
-        # with pd.option_context('display.max_rows', None, 'display.max_columns', None):
-        #     print(deletions)
-        if not deletions.empty:
-            db_session.query(Price).filter(
-                Price.account_position_id.in_(deletions['id'].tolist())).delete(synchronize_session=False)
-            db_session.query(AccountPosition).filter(
-                AccountPosition.id.in_(deletions['id'].tolist())).delete(synchronize_session=False)
-            db_session.commit()
+    if len(pending_positions) == 0:
+        return
+
+    # new_positions.set_index(['broker_name', 'account_number', 'symbol'], inplace=True)
+    pending_positions = pd.DataFrame(pending_positions).set_index(
+        ['broker_name', 'account_number', 'symbol']
+    )
+    pending_positions['account_position_id'] = new_positions['id']
+    deletions = pending_positions[pending_positions.loc[:, 'account_position_id'].isna()].reset_index()
+    # with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+    #     print(deletions)
+    if not deletions.empty:
+        db_session.query(Price).filter(
+            Price.account_position_id.in_(deletions['id'].tolist())
+        ).delete(synchronize_session=False)
+        db_session.query(AccountPosition).filter(
+            AccountPosition.id.in_(deletions['id'].tolist())
+        ).delete(synchronize_session=False)
+        db_session.commit()

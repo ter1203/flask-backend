@@ -65,7 +65,7 @@ class TradeParser():
     def parse_update_prices(self, req: Request) -> dict:
         if not self.update_prices:
             self.update_prices = reqparse.RequestParser()
-            self.update_prices.add_argument('prices', type=list, required=True, location='json')
+            self.update_prices.add_argument('prices', type=list, location='json')
             self.update_prices.add_argument('iex', type=bool, location='json')
 
         return self.update_prices.parse_args(req)

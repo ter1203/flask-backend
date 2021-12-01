@@ -6,8 +6,8 @@ from apps.models import (
 )
 import pandas as pd
 
-
-def update_trade_for_portfolio_model(pendings: list[Pending], add: bool = True):
+def update_trades_for_pendings(pendings: list[Pending], add: bool = True):
+    '''Update trades for pendings'''
 
     trades: list[Trade] = [pending.trade for pending in pendings]
     for trade in trades:
@@ -24,9 +24,10 @@ def update_trade_for_portfolio_account(portfolio: Portfolio, pendings: list[Pend
     trades: list[Trade] = [pending.trade for pending in pendings]
     for trade in trades:
         trade_pendings: list[Pending] = trade.pendings
-        portfolios: list[Portfolio] = [
-            item.portfolio for item in trade_pendings]
+        portfolios: list[Portfolio] = [item.portfolio for item in trade_pendings]
         portfolios.remove(portfolio)
+
+        trade_update_portfolios(trade, portfolios)
 
 
 def trade_update_portfolios(trade: Trade, portfolios: list[Portfolio]):
