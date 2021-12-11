@@ -8,10 +8,10 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects import postgresql
-from libs.database import Base
+from libs.database import Base, Stateful
 
 
-class Model(Base):
+class Model(Stateful):
     '''Model table'''
 
     __tablename__ = 'models'
@@ -26,7 +26,6 @@ class Model(Base):
     allocation = relationship(
         "ModelPosition", back_populates="model", cascade="all, delete, delete-orphan")
     portfolio = relationship("Portfolio", back_populates="model")
-    pendings = relationship('Pending', back_populates='model')
 
     def as_dict(self):
         result = {

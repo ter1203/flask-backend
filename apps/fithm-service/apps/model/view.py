@@ -1,7 +1,6 @@
 from flask import current_app, g, abort
 from libs.database import db_session
-from apps.models import Model, Business, ModelPosition, Pending
-import pandas
+from apps.models import Model, Business, ModelPosition
 from libs.database import helpers
 
 class ModelView:
@@ -21,7 +20,7 @@ class ModelView:
             else filter(lambda model: not model.is_public, business.models)
         )
         return {
-            'models': [model.as_dict() for model in models]
+            'models': [model.as_dict() for model in models if model.active]
         }
 
 
@@ -46,6 +45,9 @@ class ModelView:
         '''Get a specific model with id'''
 
         model = self.__get_model(id)
+        if not model.active:
+            abort(401, 'Not active model')
+
         return model.as_dict()
 
 
@@ -67,14 +69,11 @@ class ModelView:
         '''Delete a model'''
 
         model = self.__get_model(id)
-        pendings = model.pendings
         db_session.delete(model)
         db_session.commit()
-        helpers.update_trades_for_pendings(pendings)
+        # helpers.update_trades_for_pendings(pendings)
 
-        return {
-            'result': 'success'
-        }
+        return { 'result': 'success' }
 
 
     def update_model_position(self, id: int, body: dict) -> dict:
@@ -91,8 +90,8 @@ class ModelView:
         model.allocation = positions
         db_session.commit()
 
-        pendings: list[Pending] = model.pendings
-        helpers.update_trades_for_pendings(pendings)
+        # pendings: list[Pending] = model.pendings
+        # helpers.update_trades_for_pendings(pendings)
 
         return model.as_dict()
 
