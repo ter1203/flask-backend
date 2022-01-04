@@ -3,6 +3,7 @@ from flask_mail import Mail
 from config import Config
 from libs.database import init_db
 from libs.middleware import init_middlewares
+from libs.depends.register import register_all
 
 def create_app():
     """App factory function"""
@@ -19,4 +20,5 @@ def create_app():
 
     return app
 
+register_all()
 app = create_app()

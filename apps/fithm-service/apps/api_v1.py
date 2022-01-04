@@ -10,11 +10,11 @@ api_v1.add_namespace(account)
 from .admin.router import admin
 api_v1.add_namespace(admin)
 
-from .model.router import model
-api_v1.add_namespace(model)
+# from .model.router import model
+# api_v1.add_namespace(model)
 
-from .portfolio.router import portfolio
-api_v1.add_namespace(portfolio)
+# from .portfolio.router import portfolio
+# api_v1.add_namespace(portfolio)
 
-from .trade.router import trade
-api_v1.add_namespace(trade)
+# from .trade.router import trade
+# api_v1.add_namespace(trade)

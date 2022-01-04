@@ -112,7 +112,12 @@ class AuthBase:
         '''Confirm email using the token'''
 
         sec_key: str = current_app.config['SECRET_KEY']
-        payload = jwt.decode(token, f'{sec_key}_conf', ['HS256'])
+        try:
+            payload = jwt.decode(token, f'{sec_key}_conf', ['HS256'])
+        except Exception as e:
+            abort(400, 'Invalid token')
+
+        current_app.logger.debug(f'confirm_email with token {payload}')
         if self.__is_expired(payload):
             abort(400, 'Expired token')
 
@@ -136,7 +141,7 @@ class AuthBase:
     def __create_token(self, body: Dict, sec_key: str) -> str:
         '''Create a token based on body and secret key'''
 
-        return jwt.encode(body, sec_key)
+        return jwt.encode(body, sec_key, 'HS256')
 
 
     def __get_authorization_token(self, request: Request):

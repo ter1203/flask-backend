@@ -53,11 +53,10 @@ class PortfolioView:
         '''Delete a portfolio'''
 
         portfolio = self.__get_portfolio(id)
-        pendings = portfolio.pendings
         
         db_session.delete(portfolio)
         db_session.commit()
-        helpers.update_trade_for_portfolio_model(pendings, False)
+        # helpers.update_trades_for_pendings(pendings, False)
 
         return {'result': 'success'}
 
@@ -66,9 +65,9 @@ class PortfolioView:
         '''Get accounts connected to the porfolio'''
 
         portfolio = self.__get_portfolio(id)
-        pendings = portfolio.pendings
-        if len(pendings) > 0:
-            helpers.update_trade_for_portfolio_account(portfolio, pendings)
+        # pendings = portfolio.pendings
+        # if len(pendings) > 0:
+        #     helpers.update_trade_for_portfolio_account(portfolio, pendings)
 
         account_ids = body['accounts']
         accounts = get_accounts(account_ids)
@@ -88,9 +87,9 @@ class PortfolioView:
         portfolio.model_id = model_id
         db_session.commit()
 
-        pendings = portfolio.pendings
-        if len(pendings) > 0:
-            helpers.update_trade_for_portfolio_model(pendings)
+        # pendings = portfolio.pendings
+        # if len(pendings) > 0:
+        #     helpers.update_trades_for_pendings(pendings)
 
         return portfolio.as_dict()
 

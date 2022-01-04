@@ -99,29 +99,16 @@ class Business(Base):
         return ({'id': self.id, 'user_id': self.user_id})
 
 
-class Pending(Base):
-    __tablename__ = 'pendings'
+class TradePortfolio(Base):
+    __tablename__ = 'trade_portfolios'
     id = Column(Integer, primary_key=True)
     trade_id = Column(Integer, ForeignKey('trades.id'))
     portfolio_id = Column(Integer, ForeignKey('portfolios.id'), nullable=False)
-    portfolio_name = Column(String)
-    model_id = Column(Integer, ForeignKey('models.id'))
-    model = relationship('Model', back_populates='pendings')
-    trade = relationship("Trade", back_populates="pendings")
-    portfolio = relationship("Portfolio", back_populates="pendings")
-    account_positions = relationship(
-        "AccountPosition", back_populates="pending", cascade="all, delete, delete-orphan")
+    trade = relationship("Trade", back_populates="portfolios")
+    portfolio = relationship("Portfolio", back_populates="trades")
 
     def as_dict(self):
-        result = {'id': self.id, 'trade_id': self.trade_id, 'portfolio_id': self.portfolio_id, 'account_positions': [],
-                  'portfolio_name': 'null'}
-        if self.portfolio_name:
-            result['portfolio_name'] = self.portfolio_name
-        if self.account_positions:
-            account_positions = []
-            for a in self.account_positions:
-                account_positions.append(a.as_dict())
-            result['account_positions'] = account_positions
+        result = {'id': self.id, 'trade_id': self.trade_id, 'portfolio_id': self.portfolio_id}
         return result
 
 

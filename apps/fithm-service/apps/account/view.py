@@ -16,7 +16,7 @@ class AccountView:
         business: Business = g.business
         accounts: List[Account] = business.accounts
         return {
-            'accounts': [account.as_dict() for account in accounts]
+            'accounts': [account.as_dict() for account in accounts if account.active]
         }
 
 
@@ -50,6 +50,9 @@ class AccountView:
         '''Get account detail'''
 
         account = self.__get_account(id)
+        if not account.active:
+            abort(401, 'Not active account')
+
         return account.as_dict()
 
 
@@ -72,8 +75,6 @@ class AccountView:
         account = self.__get_account(id)
         db_session.delete(account)
         db_session.commit()
-
-        # todo update prices when account is
 
         return { 'result': 'success' }
 
