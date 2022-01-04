@@ -11,7 +11,7 @@ class ModelList(Resource):
     @model.doc('get all models')
     def get(self):
 
-        return view.get_models()
+        return view.get_models(request.args)
 
 
     @model.doc('create a model')

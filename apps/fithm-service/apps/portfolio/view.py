@@ -1,5 +1,5 @@
 from flask import current_app, g
-from apps.models import Portfolio, Business, Model
+from apps.models import Portfolio, Business, Model, Account
 from libs.database import db_session, helpers
 from libs.database.accounts import get_accounts
 
@@ -14,7 +14,7 @@ class PortfolioView:
 
         business: Business = g.business
         return {
-            'portfolios': business.portfolios
+            'portfolios': [portfolio.as_dict() for portfolio in business.portfolios]
         }
 
 
@@ -35,7 +35,8 @@ class PortfolioView:
     def get_portfolio(self, id: int) -> dict:
         '''Get portfolio details'''
 
-        return self.__get_portfolio(id)
+        portfolio = self.__get_portfolio(id)
+        return portfolio.as_dict()
 
 
     def update_portfolio(self, id: int, body: dict) -> dict:
@@ -52,10 +53,10 @@ class PortfolioView:
         '''Delete a portfolio'''
 
         portfolio = self.__get_portfolio(id)
-        pendings = portfolio.pendings
         
         db_session.delete(portfolio)
-        helpers.update_trade_for_portfolio_model(pendings, False)
+        db_session.commit()
+        # helpers.update_trades_for_pendings(pendings, False)
 
         return {'result': 'success'}
 
@@ -64,13 +65,14 @@ class PortfolioView:
         '''Get accounts connected to the porfolio'''
 
         portfolio = self.__get_portfolio(id)
-        pendings = portfolio.pendings
-        if len(pendings) > 0:
-            helpers.update_trade_for_portfolio_account(portfolio, pendings)
+        # pendings = portfolio.pendings
+        # if len(pendings) > 0:
+        #     helpers.update_trade_for_portfolio_account(portfolio, pendings)
 
         account_ids = body['accounts']
         accounts = get_accounts(account_ids)
-        portfolio.accounts = accounts
+        for account in accounts:
+            account.portfolio_id = id
         db_session.commit()
 
         return portfolio.as_dict()
@@ -80,15 +82,14 @@ class PortfolioView:
         '''Get models connected to the portfolio'''
 
         model_id = body['model_id']
-        model = db_session.query(Model).get(model_id)
         portfolio = self.__get_portfolio(id)
 
-        portfolio.model = model
+        portfolio.model_id = model_id
         db_session.commit()
 
-        pendings = portfolio.pendings
-        if len(pendings) > 0:
-            helpers.update_trade_for_portfolio_model(pendings)
+        # pendings = portfolio.pendings
+        # if len(pendings) > 0:
+        #     helpers.update_trades_for_pendings(pendings)
 
         return portfolio.as_dict()
 

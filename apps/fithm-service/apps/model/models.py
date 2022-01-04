@@ -8,10 +8,10 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects import postgresql
-from libs.database import Base
+from libs.database import Base, Stateful
 
 
-class Model(Base):
+class Model(Stateful):
     '''Model table'''
 
     __tablename__ = 'models'
@@ -19,19 +19,23 @@ class Model(Base):
     id = Column(Integer, primary_key=True)
     business_id = Column(Integer, ForeignKey('businesses.id'), nullable=False)
     name = Column(String)
+    description = Column(String)
     keywords = Column("data", postgresql.ARRAY(String))
     is_public = Column(Boolean, default=False, nullable=False)
     business = relationship("Business", back_populates="models")
     allocation = relationship(
         "ModelPosition", back_populates="model", cascade="all, delete, delete-orphan")
     portfolio = relationship("Portfolio", back_populates="model")
-    pendings = relationship('Pending', back_populates='model')
 
     def as_dict(self):
-        result = {'id': self.id, 'name': self.name, 'keywords': [], 'allocation': 'null',
-                  'is_public': str(self.is_public).lower()}
-        if not self.is_public:
-            result['user_id'] = self.business.user_id
+        result = {
+            'id': self.id,
+            'name': self.name,
+            'keywords': [],
+            'is_public': self.is_public,
+            'description': self.description
+        }
+        result['user_id'] = self.business.user_id
         if self.allocation:
             result['positions'] = [a.as_dict() for a in self.allocation]
         if self.keywords:

@@ -26,7 +26,7 @@ class UserView:
         password = None
 
         current_app.logger.debug(f'params: {param}, {user.password}')
-        if 'old_password' in param:
+        if 'old_password' in param and param['old_password']:
             if not self.authenticator.verify_password(param['old_password'], user.password):
                 current_app.logger.debug('password is incorrect')
                 abort(401, 'password is incorrect')

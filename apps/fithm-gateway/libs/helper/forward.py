@@ -1,5 +1,5 @@
 from typing import Optional, Dict
-from flask import request, current_app, g
+from flask import json, request, current_app, g, abort
 import requests
 
 
@@ -21,4 +21,8 @@ def forward_request(body: Optional[Dict] = None, params: Optional[Dict] = None) 
             params['user_id'] = g.user.id
 
     current_app.logger.debug(f'url = {url}, method = {method}, params = {params}, body = {body}')
-    return requests.request(method, url, params=params, json=body).json()
+    response = requests.request(method, url, params=params, json=body)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        abort(response.status_code, response.content.decode('utf8'))

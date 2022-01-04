@@ -5,6 +5,7 @@ from flask import Request
 class TradeParser():
 
     def __init__(self):
+        self.create = None
         self.update = None
         self.instructions = None
         self.update_portfolios = None
@@ -17,8 +18,17 @@ class TradeParser():
         if not self.update:
             self.update = reqparse.RequestParser()
             self.update.add_argument('status', type=bool, required=True, location='json')
+            self.update.add_argument('name', type=str, required=True, location='json')
 
         return self.update.parse_args(req)
+
+
+    def parse_create(self, req: Request) -> dict:
+        if not self.create:
+            self.create = reqparse.RequestParser()
+            self.create.add_argument('name', type=str, required=True, location='json')
+
+        return self.create.parse_args(req)
 
 
     def parse_instructions(self, req: Request) -> dict:
@@ -56,7 +66,7 @@ class TradeParser():
     def parse_update_prices(self, req: Request) -> dict:
         if not self.update_prices:
             self.update_prices = reqparse.RequestParser()
-            self.update_prices.add_argument('prices', type=list, required=True, location='json')
+            self.update_prices.add_argument('prices', type=list, location='json')
             self.update_prices.add_argument('iex', type=bool, location='json')
 
         return self.update_prices.parse_args(req)

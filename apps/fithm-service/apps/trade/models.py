@@ -8,34 +8,29 @@ from sqlalchemy import (
     DateTime
 )
 from sqlalchemy.orm import relationship
-from libs.database import Base
+from libs.database import Base, Stateful
 
 
-class Trade(Base):
+class Trade(Stateful):
     __tablename__ = 'trades'
     id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
     business_id = Column(Integer, ForeignKey('businesses.id'), nullable=False)
     created = Column(DateTime, nullable=False)
     status = Column(Boolean, nullable=False)
     business = relationship("Business", back_populates="trades")
-    pendings = relationship("Pending", back_populates="trade",
+    portfolios = relationship("TradePortfolio", back_populates="trade",
                             cascade="all, delete, delete-orphan")
     prices = relationship("Price", back_populates="trade",
                           cascade="all, delete, delete-orphan")
 
     def as_dict(self):
-        result = {'id': self.id, 'user_id': self.business.user_id, 'created': str(self.created), 'status': str(self.status),
-                  'pendings': [], 'prices': []}
-        if self.pendings:
-            pendings = []
-            for p in self.pendings:
-                pendings.append(p.as_dict())
-            result['pendings'] = pendings
+        result = {'id': self.id, 'name': self.name, 'user_id': self.business.user_id, 'created': str(self.created), 'status': str(self.status),
+                  'portfolios': [], 'prices': []}
+        if self.portfolios:
+            result['portfolios'] = [p.as_dict() for p in self.portfolios]
         if self.prices:
-            prices = []
-            for pr in self.prices:
-                prices.append(pr.as_dict())
-            result['prices'] = prices
+            result['prices'] = [p.as_dict() for p in self.prices]
         return result
 
 

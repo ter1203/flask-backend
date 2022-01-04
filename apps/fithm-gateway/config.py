@@ -50,7 +50,7 @@ class Config:
 
     EXPIRE_TIME = {
         'access_token': 60,
-        'refresh_token': 80,
+        'refresh_token': 120,
         'confirm_token': 5,
         'reset_token': 5
     }

@@ -10,6 +10,7 @@ class AuthParser:
         self.email_confirm = None
         self.forgot_pass = None
         self.reset_pass = None
+        self.refresh = None
 
 
     def parse_signup(self, req: Request) -> dict:
@@ -65,3 +66,11 @@ class AuthParser:
             self.reset_pass.add_argument('password', required=True, type=str, location='json')
 
         return self.reset_pass.parse_args(req)
+
+
+    def parse_refresh(self, req: Request) -> dict:
+        if not self.refresh:
+            self.refresh = reqparse.RequestParser()
+            self.refresh.add_argument('token', required=True, type=str, location='args')
+
+        return self.refresh.parse_args(req)

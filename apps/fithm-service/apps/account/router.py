@@ -31,6 +31,12 @@ class Account(Resource):
         return view.get_account(account_id)
 
 
+    @account.doc('update account info')
+    def put(self, account_id: str):
+
+        return view.update_account(account_id, request.json)
+
+
     @account.doc('delete account')
     def delete(self, account_id: str):
 
